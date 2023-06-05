@@ -3,6 +3,7 @@ import usePageMeta from "../../../Hooks/usePageMeata"
 import React from "react"
 import { Box } from "@mui/material"
 import SearchComponent from "../../Components/search-component"
+import MovieViewVCard from "../../Partials/MovieViewCard"
 
 export default function Home() {
 
@@ -17,7 +18,7 @@ export default function Home() {
     useEffect(() => {
         const Telegram = (window as any)?.Telegram?.WebApp
         if (Telegram) {
-            console.log(Telegram.username)
+            // console.log(Telegram.username)
         }
     })
 
@@ -27,7 +28,9 @@ export default function Home() {
             <SearchComponent />
             <main className="contents">
                 <div className="section-container">
-                    HEY FREF FRED
+                    <MovieViewVCard
+                        url="https://api.telegram.org/file/bot6048275210:AAHsqBABDZj3gr82kI3uwpHK5tkpSIUNDTU/videos/file_4.mp4"
+                    />
                 </div>
             </main>
         </Box>

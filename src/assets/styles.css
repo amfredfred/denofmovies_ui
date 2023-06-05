@@ -32,11 +32,11 @@ body {
 }
 
 .layout-contents {
-    width: 890px;
+    width: 670px;
     max-width: 100%;
     min-height: 100dvh;
     margin-inline: auto;
-    background: var(--global-box-bg);
+    /* background: var(--global-box-bg); */
 }
 
 .space-between {
@@ -85,18 +85,18 @@ button.bdr-5px {
     /* overflow: hidden; */
 }
 
-.input-container .search-results{
+.input-container .search-results {
     width: 100%;
     position: absolute;
     top: 110%;
-    background:var(--global-bg);
+    background: var(--global-bg);
     border-radius: 10px;
     min-height: 100px;
     z-index: 2;
     box-shadow: 0 5px 20px -7px rgb(17, 17, 17);
 }
 
-.input-container button.is-button{
+.input-container button.is-button {
     border-top-right-radius: 50px !important;
     border-bottom-right-radius: 50px !important;
 }
@@ -131,9 +131,20 @@ button.bdr-5px {
 .section-container {
     width: 100%;
     border-radius: 10px;
-    padding: .7rem;
     position: relative;
     margin-bottom: 1rem
+}
+
+.movie-view-card-container {
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-height: max-content;
+    /* border-bottom: solid red thick;
+    border-top: solid thick red; */
+    background: var(--new-box-bg);
 }
 
 .section-container::after {
@@ -147,4 +158,47 @@ button.bdr-5px {
     content: '';
     border-radius: inherit;
     z-index: -2;
+}
+
+.video-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    background: rebeccapurple;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.video-player {
+    width: 100%;
+    object-fit: contain;
+    object-position: center;
+    -o-object-fit: cover;
+    flex-grow: 1;
+    max-height: 60dvh;
+}
+
+.video-contraols-panel {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: .6rem;
+}
+
+.video-player::after {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    content: '';
+    width: 100%;
+    height: 100%;
+    background: red;
+    z-index: 2;
 }

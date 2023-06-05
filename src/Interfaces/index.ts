@@ -1,5 +1,7 @@
+ 
 export interface IApp {
     actions?: 'search'
+
     search: {
         actions: 'query' | 'filter'
         query: string

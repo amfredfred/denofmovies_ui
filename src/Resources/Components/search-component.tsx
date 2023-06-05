@@ -9,7 +9,7 @@ export default function SearchComponent(props: {}) {
     const [isFocused, setisFocused] = React.useState(false)
     const [app, setApp] = useLocalStorage<IApp>("@App", App)
 
-    console.log(app)
+    // console.log(app)
 
     const search_results_variant = {
         shown: { top: '110%', display: 'flex' },
@@ -41,7 +41,6 @@ export default function SearchComponent(props: {}) {
                         variants={search_results_variant}
                         animate={isFocused ? 'show' : 'hide'}
                         className="search-results">
-
                     </motion.div>
                 </div>
                 <Button className="is-button bdr-5px ">
