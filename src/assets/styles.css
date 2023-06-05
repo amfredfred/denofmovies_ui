@@ -80,8 +80,25 @@ button.bdr-5px {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: relative;
     border-radius: 50px;
-    overflow: hidden;
+    /* overflow: hidden; */
+}
+
+.input-container .search-results{
+    width: 100%;
+    position: absolute;
+    top: 110%;
+    background:var(--global-bg);
+    border-radius: 10px;
+    min-height: 100px;
+    z-index: 2;
+    box-shadow: 0 5px 20px -7px rgb(17, 17, 17);
+}
+
+.input-container button.is-button{
+    border-top-right-radius: 50px !important;
+    border-bottom-right-radius: 50px !important;
 }
 
 .text-input {
