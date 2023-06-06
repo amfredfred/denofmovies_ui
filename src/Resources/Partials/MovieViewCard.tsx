@@ -120,7 +120,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                     </div>
                 </div>
 
-                {!(isShowingDownloadOption && fileIsLoading) || downloadOptions}
+                {!(isShowingDownloadOption && !fileIsLoading) || downloadOptions}
             </div >
         </Box >
     )

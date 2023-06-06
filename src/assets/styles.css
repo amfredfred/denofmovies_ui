@@ -270,7 +270,7 @@ button.bdr-5px {
     }
 
     .searcch-bar-contaner {
-        margin-top: 0;
+        margin: 0;
         border-radius: 0;
         position: sticky;
         position: -webkit-sticky;
@@ -280,7 +280,7 @@ button.bdr-5px {
 
     .input-container .search-results {
         position: fixed;
-        top: 3.4rem  ;
+        top: 3.4rem;
         left: 0;
         width: 100vw;
         border-top-left-radius: 0;
@@ -290,10 +290,14 @@ button.bdr-5px {
     }
 
     .section-container {
-        padding-inline: 1rem;
+        padding-inline: 0;
     }
 
     .section-container::after {
         display: none;
+    }
+
+    .video-wrapper {
+        border-radius: 0;
     }
 }
