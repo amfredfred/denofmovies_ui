@@ -30,7 +30,7 @@ export default function SearchComponent(props: {}) {
                         className="text-input"
                         onFocus={() => setisFocused(s => true)}
                         onBlur={() => setisFocused(s => false)}
-                        value={!app.search.query.startsWith(' ') ? app.search.query : ''}
+                        value={!app.search?.query?.startsWith?.(' ') ? app.search?.query : ''}
                         onChange={({ target: { value } }) => handleSearchInputUpdate('query', (value))}
                         placeholder={`search: movies: ${Math.random()}`}
                     />
