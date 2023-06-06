@@ -112,6 +112,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         </div>
 
                         <Button className='is-icon '
+                            disabled={fileIsLoading}
                             onClick={() => setisShowingDownloadOption(s => !s)}>
                             <Download />
                         </Button>
@@ -119,7 +120,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                     </div>
                 </div>
 
-                {!isShowingDownloadOption || downloadOptions}
+                {!(isShowingDownloadOption && fileIsLoading) || downloadOptions}
             </div >
         </Box >
     )

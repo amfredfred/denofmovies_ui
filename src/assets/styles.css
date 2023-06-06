@@ -40,7 +40,7 @@ p {
     width: 100%;
     font-size: 13px;
     color: rgb(116, 151, 151);
-        opacity: .7;
+    opacity: .7;
 }
 
 a {
@@ -151,7 +151,6 @@ button.bdr-5px {
     align-items: center;
     padding: .6rem;
     background: var(--global-box-bg);
-
 }
 
 .section-container {
@@ -263,4 +262,38 @@ button.bdr-5px {
     height: 100%;
     background: red;
     z-index: 2;
+}
+
+@media (max-width:600px) {
+    .layout-contents {
+        padding: 0;
+    }
+
+    .searcch-bar-contaner {
+        margin-top: 0;
+        border-radius: 0;
+        position: sticky;
+        position: -webkit-sticky;
+        top: 0;
+        z-index: 5;
+    }
+
+    .input-container .search-results {
+        position: fixed;
+        top: 3.4rem  ;
+        left: 0;
+        width: 100vw;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        background: var(--global-box-bg);
+        box-shadow: 0 6px 7px var(--new-box-bg);
+    }
+
+    .section-container {
+        padding-inline: 1rem;
+    }
+
+    .section-container::after {
+        display: none;
+    }
 }

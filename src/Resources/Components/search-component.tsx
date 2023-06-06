@@ -1,18 +1,19 @@
 import { Box, Button } from "@mui/material";
 import { ArrowDropDown, Menu, PersonAddAlt, SearchOutlined } from '@mui/icons-material'
-import React, { ChangeEventHandler } from "react";
+import React from "react";
 import { motion } from 'framer-motion'
-import { useLocalStorage } from 'usehooks-ts'
+import { useLocalStorage, useWindowSize } from 'usehooks-ts'
 import { App, IApp } from "../../Interfaces";
 
 export default function SearchComponent(props: {}) {
     const [isFocused, setisFocused] = React.useState(false)
     const [app, setApp] = useLocalStorage<IApp>("@App", App)
+    const { width, height } = useWindowSize()
 
     // console.log(app)
 
     const search_results_variant = {
-        shown: { top: '110%', display: 'flex' },
+        shown: { top: width <= 600 ? '3.4rem' : '110%', display: 'flex' },
         hide: { top: 10, display: 'none' }
     }
 
@@ -43,8 +44,8 @@ export default function SearchComponent(props: {}) {
                         className="search-results">
                     </motion.div>
                 </div>
-                <Button className="is-button bdr-5px ">
-                    <span className="span-text">@username</span> <ArrowDropDown />
+                <Button className={`${width <= 600 ? 'is-icon' : 'is-button bdr-5px'}`}>
+                    {width <= 600 || <span className="span-text">@username</span>} <ArrowDropDown />
                 </Button>
             </div>
         </Box>
