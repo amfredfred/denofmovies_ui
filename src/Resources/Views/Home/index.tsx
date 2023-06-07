@@ -41,11 +41,6 @@ export default function Home() {
     })
 
     useEffect(() => {
-        const Telegram = (window as any)?.Telegram?.WebApp
-        if (Telegram) {
-            console.log(Telegram)
-        }
-
 
         if (search?.get('q')) {
             if (app?.focusedFile?.id !== search?.get('q'))

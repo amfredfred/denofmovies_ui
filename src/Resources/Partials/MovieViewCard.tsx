@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Backdrop, Box, Button, CircularProgress, Rating, Slider, Tooltip } from '@mui/material'
-import { ArrowBack, Cancel, Close, Download, DownloadDone, DownloadDoneTwoTone, DownloadTwoTone, Expand, ExpandLess, ExpandMore, Info, OpenInNewTwoTone, PauseCircle, PlayArrow, Telegram } from '@mui/icons-material'
+import { ArrowBack, Cancel, Close, Download, DownloadDone, DownloadDoneTwoTone, DownloadTwoTone, Expand, ExpandLess, ExpandMore, Info, OpenInNewTwoTone, PauseCircle, PlayArrow, RemoveRedEye, Telegram } from '@mui/icons-material'
 import { motion } from 'framer-motion'
 import { IQueryResponse } from '../../Interfaces'
 import useDownloader from "react-use-downloader"
+import { useWindowSize } from 'usehooks-ts'
+import { timeTo } from '../../Helpers'
 
 export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['props']*/
 
@@ -21,6 +23,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const [videoNewName, setvideoNewName] = useState<string>(props.fileId as any)
     const [downloadLink, setdownloadLink] = useState<string | undefined>(undefined)
     const [isPendingDownload, setisPendingDownload] = useState<boolean>()
+    const { width, height } = useWindowSize()
 
     React.useEffect(() => {
         if (url) {
@@ -83,6 +86,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const fileUrl =
         'https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80';
     const filename = 'beautiful-carpathia.jpg';
+
 
 
     const downloadOptions = (
@@ -158,7 +162,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         onCanPlay={() => setisPlayable(true)}
                         onError={(e) => {
                             setisPlayable(false)
-                            console.log(e)
                         }}
                     >
                         <source src={videoSource} type="video/mp4" />
@@ -194,11 +197,11 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                             />
                         </div>
 
-                        <Button className='is-icon '
+                        {/* <Button className='is-icon '
                             disabled={fileIsLoading}
                             onClick={() => setisShowingDownloadOption(s => !s)}>
                             <Download />
-                        </Button>
+                        </Button> */}
 
                     </div>
                 </div>
@@ -229,8 +232,13 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         style={{ background: isShwowingInfo ? 'var(--global-box-bg)' : 'transparent' }}>
                         <div className="space-between">
 
-                            <div className="space-between">
-                                <span>114 views • 24 february 2023</span>
+                            <div className="flex-align-center" style={{ flexWrap: 'wrap-reverse', justifyContent: 'left' }}>
+                                <span className='flex-align-center'>114{width <= 600 ? <RemoveRedEye style={{ fontSize: 14.5 }} /> : ' Views'}</span>
+                                <span className='flex-align-center'>{timeTo(Date.now() - Math.random() * 1000200)}</span>
+                            </div>
+
+                            <div className="flex-align-center" style={{ flexWrap: 'wrap', justifyContent: 'right' }}>
+                                <Rating color='red' />
                                 <Tooltip arrow title='zip: 90,000,000' placement='left'>
                                     <Tooltip arrow title='10,000,000' placement='top'>
                                         <Button
@@ -242,9 +250,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                                     </Tooltip>
                                 </Tooltip>
                             </div>
-                            <Rating
-                                color='red'
-                            />
                         </div>
                         {!(isShowingDownloadOption && !fileIsLoading) || downloadOptions}
                     </div>

@@ -44,8 +44,10 @@ export default function SearchComponent(props: {}) {
                         className="search-results">
                     </motion.div>
                 </div>
-                <Button className={`${width <= 600 ? 'is-icon' : 'is-button bdr-5px'}`}>
-                    {width <= 600 || <span className="span-text">@username</span>} <ArrowDropDown />
+                <Button
+                    onClick={() =>  window.location.href = '//t.me/denofmovies_bot'}
+                    className={`${width <= 600 ? 'is-icon' : 'is-button bdr-5px'}`}>
+                    {width <= 600 || <span className="span-text">{app?.user?.username ?? 'open in telegram'}</span>} <ArrowDropDown />
                 </Button>
             </div>
         </Box>

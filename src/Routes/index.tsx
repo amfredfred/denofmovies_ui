@@ -6,12 +6,47 @@ import GuestLayout from "../Resources/Layouts/GuestLayout";
 import React from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { Backdrop, CircularProgress } from "@mui/material";
+import { useLocalStorage } from "usehooks-ts";
+import { App, IApp } from "../Interfaces";
 
 export default function Routes() {
 
     const [isLoading, setisLoading] = React.useState(false)
+    const [app, setApp] = useLocalStorage<IApp>("@App", App)
 
     const QClient = new QueryClient()
+
+
+    React.useEffect(() => {
+        const Telegram = (window as any)?.Telegram?.WebApp
+        if (Telegram) {
+
+
+            const {
+                bg_color,
+                button_color,
+                button_text_color,
+                hint_color,
+                link_color,
+                secondary_bg_color,
+                text_color,
+            } = Telegram?.themeParams
+
+            console.log(Telegram)
+
+            if (Telegram.backgroundColor) {
+                const rootStyle = document.querySelector(':root') as any
+                rootStyle.style.setProperty('--global-bg', bg_color || Telegram.headerColor || Telegram.backgroundColor)
+                rootStyle.style.setProperty('--text-color', text_color)
+                rootStyle.style.setProperty('--global-color', link_color)
+                rootStyle.style.setProperty('--global-bg', Telegram.backgroundColor)
+            }
+
+            if (Telegram.initDataUnsafe?.user) {
+                setApp(s => s = { ...s, user: { ...(Telegram.initDataUnsafe?.user as any), platform: Telegram.platform } })
+            }
+        }
+    }, [])
 
 
     const Guests = (

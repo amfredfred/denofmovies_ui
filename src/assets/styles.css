@@ -15,7 +15,8 @@
      --color-shadow-large: 0 8px 24px #1c2128;
      --color-shadow-extra-large: 0 12px 48px #1c2128;
      --download-progress: 0%;
-     --dager-bg: red
+     --dager-bg: red;
+     --text-color: white
  }
 
  * {
@@ -67,10 +68,17 @@
  }
 
  .h2-headline {
-     color: white;
+     color: var(--text-color);
      width: 100%;
      font-size: 18px;
      font-weight: 600;
+ }
+
+ .flex-align-center {
+     display: flex;
+     align-items: center;
+     gap: .4rem;
+     font-size: 14px;
  }
 
  p {
