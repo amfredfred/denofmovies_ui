@@ -234,6 +234,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                                 <Tooltip arrow title='zip: 90,000,000' placement='left'>
                                     <Tooltip arrow title='10,000,000' placement='top'>
                                         <Button
+                                            disabled={fileIsLoading}
                                             onClick={() => setisShowingDownloadOption(s => !s)}
                                             className='' style={{ display: 'flex', color: 'white', alignItems: 'center' }}>
                                             <span className="small-text">100M</span> {isShowingDownloadOption ? <Close /> : <DownloadTwoTone />}

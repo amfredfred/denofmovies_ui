@@ -1,4 +1,4 @@
-import { HashRouter, Routes as Routers, Route } from "react-router-dom";
+import { HashRouter, BrowserRouter, Routes as Routers, Route } from "react-router-dom";
 import E404 from "../Resources/Views/EPages/E404";
 import Home from "../Resources/Views/Home";
 
@@ -17,8 +17,8 @@ export default function Routes() {
     const Guests = (
         <GuestLayout>
             <Routers>
-                <Route path="/" element={<Home />} />
-                <Route path="/download/" element={<Home />} />
+                <Route path="" element={<Home />} />
+                <Route path="download" element={<Home />} />
                 <Route path="*" element={<E404 />} />
             </Routers>
             <Backdrop
@@ -34,9 +34,9 @@ export default function Routes() {
 
     return (
         <QueryClientProvider client={QClient}>
-            <HashRouter>
+            <BrowserRouter>
                 {Guests}
-            </HashRouter>
+            </BrowserRouter>
         </QueryClientProvider>
     )
 }
