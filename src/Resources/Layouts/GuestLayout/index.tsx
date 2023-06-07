@@ -5,7 +5,7 @@ import SearchComponent from "../../Components/search-component";
 export default function GuestLayout(props: { children: React.ReactNode }) {
     const { children } = props
     return (
-        <Grid className="layout">
+        <Grid className="layouts">
             <Box className='layout-contents'>
                 <Box></Box>
                 {children}

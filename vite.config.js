@@ -8,4 +8,8 @@ export default defineConfig({
   build: {
     outDir: 'build'
   },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    'process.env.MY_ENV': JSON.stringify(process.env.MY_ENV),
+  }
 })

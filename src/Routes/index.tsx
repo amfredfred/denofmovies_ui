@@ -5,10 +5,14 @@ import Home from "../Resources/Views/Home";
 import GuestLayout from "../Resources/Layouts/GuestLayout";
 import React from "react";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 export default function Routes() {
 
+    const [isLoading, setisLoading] = React.useState(false)
+
     const QClient = new QueryClient()
+
 
     const Guests = (
         <GuestLayout>
@@ -17,6 +21,14 @@ export default function Routes() {
                 <Route path="/download/" element={<Home />} />
                 <Route path="*" element={<E404 />} />
             </Routers>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: 0, position: 'absolute' }}
+                // open={open}
+                // onClick={handleClose}
+                open={isLoading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
         </GuestLayout>
     )
 
