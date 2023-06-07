@@ -43,7 +43,7 @@ export default function Home() {
     useEffect(() => {
         const Telegram = (window as any)?.Telegram?.WebApp
         if (Telegram) {
-            console.log(Telegram.username)
+            console.log(Telegram)
         }
 
 
