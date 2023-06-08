@@ -8,12 +8,12 @@ import { useSearchParams } from "react-router-dom"
 import { useLocalStorage } from "usehooks-ts"
 import { App, IApp, IQueryResponse } from "../../../Interfaces"
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios' 
+import axios from 'axios'
 
-export default function Home() {
+export default function Watch() {
 
-    
-    const [search] = useSearchParams({ q: 'sddsd' })
+
+    const [search] = useSearchParams({ v: 'sddsd' })
     const [app, setApp] = useLocalStorage<IApp>("@App", App)
 
     const handleFocusFileUpdate = (param: IApp['actions'], payload: any) => {
@@ -34,17 +34,17 @@ export default function Home() {
 
     usePageMeta({
         metas: [{
-            'content': Res.status,
+            'content': Res.data?.data.fileId,
             'property': 'og:description',
         }],
-        title: Res.status
+        title: Res.status === 'success' ? Res.data?.data.fileId ?? "Watching now..." : "Wait"
     })
 
     useEffect(() => {
-
-        if (search?.get('q')) {
-            if (app?.focusedFile?.id !== search?.get('q'))
-                handleFocusFileUpdate('id', search?.get('q'))
+        console.log(app?.focusedFile?.id)
+        if (search?.get('v')) {
+            if (app?.focusedFile?.id !== search?.get('v'))
+                handleFocusFileUpdate('id', search?.get('v'))
         }
     }, [Res.data, Res.isError])
 

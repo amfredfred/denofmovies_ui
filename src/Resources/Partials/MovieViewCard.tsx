@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Backdrop, Box, Button, CircularProgress, Rating, Slider, Tooltip } from '@mui/material'
-import { ArrowBack, Cancel, Close, Download, DownloadDone, DownloadDoneTwoTone, DownloadTwoTone, Expand, ExpandLess, ExpandMore, Info, OpenInNewTwoTone, PauseCircle, PlayArrow, RemoveRedEye, Telegram } from '@mui/icons-material'
+import { Backdrop, Box, Button, CircularProgress, LinearProgress, Rating, Slider, Tooltip } from '@mui/material'
+import { ArrowBack, Cancel, Close, Download, DownloadDone, DownloadDoneTwoTone, DownloadTwoTone, Expand, ExpandLess, ExpandMore, Info, OpenInBrowser, OpenInNewTwoTone, PauseCircle, PlayArrow, RemoveRedEye, Telegram } from '@mui/icons-material'
 import { motion } from 'framer-motion'
 import { IQueryResponse } from '../../Interfaces'
 import useDownloader from "react-use-downloader"
@@ -118,11 +118,16 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                             <span className="span-text no-break">Download</span>
                             <Download />
                         </Button>
+                        <Button className='is-icon'
+                            onClick={() => window.open(downloadLink, '_blank')}
+                            style={{ display: 'flex', alignItems: 'center' }}>
+                            <OpenInNewTwoTone />
+                        </Button>
                     </>
                     : <>
                         <Button className='is-button'
                             onClick={() => {
-                                setdownloadLink(s => fileUrl)
+                                setdownloadLink(s => '')
                                 setisPendingDownload(true)
                             }}>
                             <span className="span-text no-break">Zip {props?.fileSize} </span>
@@ -211,7 +216,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
             <div className="video-content-info">
                 <div className="space-between" style={{ paddingInline: '.4rem' }}>
                     <h2 className="h2-headline">
-                        Potential Vitamin and Mineral Deficiency Risks on a Vegan Diet
+                        {props.fileIsLoading ? <LinearProgress /> : props.fileId?.replace(/-/g, ' ')?.toLocaleUpperCase()}
                     </h2>
                     <motion.div
                         animate={{
@@ -257,22 +262,27 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                     {
                         !isShwowingInfo ?
                             <p onClick={handleExpandInfo} style={{ whiteSpace: 'nowrap', paddingBottom: '.7rem', cursor: 'pointer' }}>
-                                Have a question about this video? Leave it in the comment section at http://nutritionfacts.org/video/poten...
+                                {props.fileDescription}
                             </p>
                             :
                             <>
                                 <hr />
                                 <h2 className="h2-headline" style={{ maxWidth: '100%', marginBottom: '.7rem', wordWrap: 'normal', 'whiteSpace': 'pre-wrap' }}>
-                                    Potential Vitamin and Mineral Deficiency Risks on a Vegan Diet
+                                    {props.fileIsLoading ? <LinearProgress /> : props.fileId?.replace(/-/g, ' ')?.toLocaleUpperCase()}
                                 </h2>
                                 <p>
-                                    Have a question about this video? Leave it in the comment section at http://nutritionfacts.org/video/poten...<br />
-                                    and someone on the NutritionFacts.org team will try to answer it.<br /><br />
-
-                                    Want to get a list of links to all the scientific sources used in this video? Click on Sources Cited at https://nutritionfacts.org/video/pote....<br />
-                                    You’ll also find a transcript and acknowledgements for the video, my blog and speaking tour schedule, and an easy way to search (by translated language even) through our videos spanning more than 2,000 health topics.
-                                    <br /><br />
-                                    Thanks for watching. I hope you’ll join in the evidence-based nutrition revolution!<br /><br />
+                                    {props.fileDescription}
+                                    <br />
+                                    <ins className="adsbygoogle"
+                                        style={{ display: 'block', alignContent: 'center' }}
+                                        data-ad-layout="in-article"
+                                        data-ad-format="fluid"
+                                        data-ad-client="ca-pub-9643693190346556"
+                                        data-ad-slot="8971255154"></ins>
+                                    <script>
+                                        (adsbygoogle = window.adsbygoogle || []).push({ });
+                                    </script>
+                                    <br />
                                 </p>
                             </>
                     }

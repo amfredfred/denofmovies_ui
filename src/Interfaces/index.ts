@@ -10,6 +10,8 @@ export interface IQueryResponse {
     filePlaceHolder?: string
     fileOriginalSize?: string
     fileParentPath?: string
+    fileDescription?: string
+    fileCreatedAt?: string
     fileIsLoading: boolean
 }
 
@@ -35,7 +37,7 @@ export interface IApp {
         username: string,
         language_code: string,
         authenticated: boolean
-        platform:string
+        platform: string
     }
 
 }

@@ -1,6 +1,9 @@
 import { HashRouter, BrowserRouter, Routes as Routers, Route } from "react-router-dom";
 import E404 from "../Resources/Views/EPages/E404";
-import Home from "../Resources/Views/Home";
+import Home from "../Resources/Views/Watch";
+import Watch from "../Resources/Views/Watch";
+
+
 
 import GuestLayout from "../Resources/Layouts/GuestLayout";
 import React from "react";
@@ -53,7 +56,7 @@ export default function Routes() {
         <GuestLayout>
             <Routers>
                 <Route path="" element={<Home />} />
-                <Route path="download" element={<Home />} />
+                <Route path="watch" element={<Watch />} />
                 <Route path="*" element={<E404 />} />
             </Routers>
             <Backdrop
