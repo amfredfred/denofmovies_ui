@@ -3,7 +3,7 @@ import { useEffect, useLayoutEffect } from 'react'
 
 export interface IMeataTag {
     property: "og:title" | "og:type" | "og:url" | "og:description" | "og:site_name"
-    content?: string
+    content?: any
     name?: "description" | "twitter:image:alt"
 }
 
@@ -13,7 +13,7 @@ export interface IPageMeta {
     title: string
 }
 
-export default function usePageMeta(props: IPageMeta) {
+export default function usePageMeta(props: IPageMeta, deps:any) {
     const { metas, title } = props
 
     useLayoutEffect(() => {
@@ -28,7 +28,7 @@ export default function usePageMeta(props: IPageMeta) {
 
         document.title = title
 
-    }, [props])
+    }, [deps])
 
 
 }

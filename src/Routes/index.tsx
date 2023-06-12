@@ -19,12 +19,9 @@ export default function Routes() {
 
     const QClient = new QueryClient()
 
-
     React.useEffect(() => {
         const Telegram = (window as any)?.Telegram?.WebApp
         if (Telegram) {
-
-
             const {
                 bg_color,
                 button_color,
@@ -34,8 +31,6 @@ export default function Routes() {
                 secondary_bg_color,
                 text_color,
             } = Telegram?.themeParams
-
-            console.log(Telegram)
 
             if (Telegram.backgroundColor) {
                 const rootStyle = document.querySelector(':root') as any

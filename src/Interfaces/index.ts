@@ -1,18 +1,29 @@
 export interface IQueryResponse {
-    fileId?: string
+    fileUniqueId?:string
+    fileId?: number
     fileType?: string
-    fileContent?: string
-    fileSize?: string
+    fileSize?: number
     fileUploader?: string
-    fileUploadedFrom?: string,
-    fileDownloadCount?: string
-    fileRelativePath?: string
-    filePlaceHolder?: string
-    fileOriginalSize?: string
+    fileDownloadCount?: number
     fileParentPath?: string
     fileDescription?: string
-    fileCreatedAt?: string
+    fileThumbnail?: string
+    fileCreatedAt?: Date | string
+    fileRemoteId?: string
+    fileDownloadLink?: string
+    fileCaption?: string
     fileIsLoading: boolean
+    fileSkip?(method: 'next' | 'previous' | 'shuffle', id?:number): void
+}
+
+
+
+export interface IFileSliderSection {
+    children?: React.ReactNode,
+    items?: IQueryResponse[]
+    headline: React.ReactNode
+    fileIsLoading: boolean
+    fileSkip?(method: 'next' | 'previous' | 'shuffle'): void
 }
 
 export interface IApp {
