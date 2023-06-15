@@ -10,6 +10,7 @@ import { App, IApp, IQueryResponse } from "../../../Interfaces"
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import FileSliderSection from "../../Components/file-slider-section"
+import { defaultMethod } from "react-router-dom/dist/dom"
 
 export default function Watch() {
     const [search] = useSearchParams({ v: '' })
@@ -17,7 +18,7 @@ export default function Watch() {
     const [post, setpost] = React.useState<IQueryResponse>()
     const [isLoading, setisLoading] = React.useState(false)
     const [method, setmethod] = React.useState('random-one')
-    const [current_id, setcurrent_id] = React.useState(0)
+    const [current_id, setcurrent_id] = React.useState(1)
 
     const handleFocusFileUpdate = (param: IApp['actions'], payload: any) => {
         setApp((prev) => prev = ({ ...prev, 'focusedFile': { ...prev.focusedFile, [param as any]: payload } }))
@@ -30,11 +31,11 @@ export default function Watch() {
             headers: { "Content-Type": 'application/json' },
             url: `${import.meta.env.VITE_APP_SERVER_URL}/watch?v=${app?.focusedFile?.id}`
         }),
-        queryKey: ['file', app?.focusedFile?.id],
+        queryKey: ['file', "VIDEO_PALYING"],
         enabled: Boolean(app.focusedFile?.id),
         retry: true,
     })
-
+    
     const files = useQuery({
         queryFn: async () => await axios<IQueryResponse[]>({
             method: 'POST',
@@ -49,13 +50,13 @@ export default function Watch() {
     })
 
     const Random = useMutation({
-        mutationFn: async ({ method, current_id }: any) => await axios<IQueryResponse>({
+        mutationFn: async ({ method, cid }: any) => await axios<IQueryResponse>({
             method: 'POST',
-            data: { username: app.user?.username, method, current_id },
+            data: { username: app.user?.username, method, cid },
             headers: { "Content-Type": 'application/json' },
             url: `${import.meta.env.VITE_APP_SERVER_URL}/random`
         }),
-        mutationKey: ['random', [method]],
+        mutationKey: ['files', [current_id]],
         retry: true
     })
 
@@ -64,7 +65,7 @@ export default function Watch() {
             'content': post?.fileId,
             'property': 'og:description',
         }],
-        title: Res.status === 'success' ? post?.fileCaption ?? "Watching now..." : "Wait"
+        title: !isLoading ? post?.fileCaption ?? "Watching now..." : "Wait"
     }, [])
 
     useEffect(() => {
@@ -77,24 +78,30 @@ export default function Watch() {
             handleFocusFileUpdate('id', null)
         }
 
-        if (Random.data?.data) {
+        if (Random.data?.data && !app?.focusedFile?.id) {
             // Res.remove()
             setisLoading(Random.isLoading)
             setpost(Random.data?.data)
-        } else if (Res.data?.data) {
-            // Random.remove()
+        } else if (Res.data?.data ) {
+            console.log('SUCCESSSS')
+            // Random.reset()
             setisLoading(Res.isLoading)
-            setpost(Res.data.data)
+            setpost(Res.data?.data)
+        }
+        console.log(Random.failureReason, Res.data?.data, Random.isLoading)
+        if (!Boolean(app.focusedFile?.id) && !Random.isLoading && !post && !Res?.isLoading) {
+            console.log('LOL')
+            Random.mutate('')
         }
 
-        if (!Boolean(app.focusedFile?.id) && !Random.isLoading && !post) Random.mutate('')
+    }, [Res.data?.data, search])
 
-    }, [Res.data, Res.isError, search, Random.status, Random.isError])
 
- 
-    console.log(Random.failureReason)
 
-    const handleSkipMethod = (method, current_id) => Random.mutate(method, current_id)
+    const handleSkipMethod = (method, current_id) => {
+        setcurrent_id(method === 'next' ? current_id + 1 : method === 'prev' ? current_id - 1 : current_id)
+        Random.mutate(method, current_id)
+    }
 
     return (
         <Box className='main-page-contents'>
@@ -113,8 +120,7 @@ export default function Watch() {
                 <FileSliderSection
                     headline={`Latest uploads`}
                     fileIsLoading={files.isLoading}
-                    items={files.data?.data} />
-
+                    items={files.data?.data ?? [{}, {}, {}] as any} />
             </main>
         </Box>
     )

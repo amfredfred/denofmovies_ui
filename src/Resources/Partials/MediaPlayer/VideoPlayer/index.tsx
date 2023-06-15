@@ -21,7 +21,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const [videoPlayedPercentage, setvideoPlayedPercentage] = useState(0)
     const [videoCurrentPlayTime, setvideoCurrentPlayTime] = useState('0')
     const [isShwowingInfo, setisShwowingInfo] = useState(false)
-    const [showPlayerControls, setshowPlayerControls] = useState(true)
     const { size, elapsed, percentage, download, cancel, error, isInProgress, } = useDownloader();
     const [videoNewName, setvideoNewName] = useState<string>(props.fileId as any)
     const [downloadLink, setdownloadLink] = useState<string | undefined>(undefined)
@@ -32,7 +31,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const [isInFullScreenMode, setisInFullScreenMode] = useState(false)
     const [currentVolumeRange, setcurrentVolumeRange] = useState(.3)
     const [isScrubbing, setisScrubbing] = useState(false)
-    const [videoWasPaused, setvideoWasPaused] = useState(false)
     const [volumeControlHovered, setvolumeControlHovered] = useState(false)
     const { width, height } = useWindowSize()
 
@@ -40,7 +38,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         if (url) {
             setVideoSource(url)
         }
-    }, [videoRef, fileIsLoading, app.focusedFile])
+    }, [videoRef, fileIsLoading, app.focusedFile?.id])
 
     const playControlVariant = {
         show: { y: 0, display: 'flex' },
@@ -66,7 +64,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const handlePlayTimeUpdate = (e: any) => {
         const $root = document.querySelector(':root') as any
         const { currentTime, duration } = e.target
-        // console.log(currentTime, duration)
         const playedPercentage = change(duration, currentTime)
         $root?.style?.setProperty?.('--video-play-time', `${playedPercentage.percentage}%`)
         setvideoPlayedPercentage(s => playedPercentage.percentage)
@@ -84,15 +81,16 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         const percentage = Math.min(Math.max(0, e.screenX - rect?.x), rect.width) / rect.width * 100;
         const $root = document.querySelector(':root') as any
         $root?.style?.setProperty?.('--preview-position', `${percentage}%`)
+        let videoWasPaused = false
         if (isScrubbing) {
             e.preventDefault()
             videoRef?.current?.pause?.()
-            setvideoWasPaused(s => true)
+            videoWasPaused= true
             handleCurrentPlayTimeChanged(percentage)
             $root?.style?.setProperty?.('--preview-position', `${percentage}%`)
         } else {
             if (videoWasPaused) {
-                setvideoWasPaused(s => false)
+                videoWasPaused= false
                 videoRef?.current?.play?.()
             }
         }
@@ -100,7 +98,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     }
 
     const toggleScrubbing = (e: any) => {
-        console.log(e.buttons)
+        console.log(e?.buttons === 1)
         const timelineContainer = document.querySelector('.video-timeline-container')
         timelineContainer?.classList.toggle('scrubbing', isScrubbing)
         setisScrubbing(e?.buttons === 1)
@@ -131,9 +129,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         setisShwowingInfo(s => !s)
     }
 
-    const handleNextButtonPress = () => {
-
-    }
 
     const handleVolumeChange = (range: number) => {
         setcurrentVolumeRange(range);
@@ -229,6 +224,14 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                 onContextMenu={() => { return false }}>
                 <div className="video-wrapper"
                     onClick={handleTogglePlay}  >
+                    {
+                        (isPaused || fileIsLoading) || <motion.img
+                            animate={{ x: 0 }}
+                            initial={{ x:-100 }}
+                            exit={{ x: -100 }}
+                            src={props.fileThumbnail}
+                            className='video-paused-overlay' />
+                    }
                     <motion.video
                         controls={false}
                         controlsList='nodownload'
@@ -238,6 +241,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         playsInline
                         src={videoSource}
                         ref={videoRef}
+                        poster={props.fileThumbnail}
                         onPlaying={() => setisPaused(true)}
                         onLoadedData={handleMetaDataloaded}
                         autoPlay
@@ -425,6 +429,12 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                                     <script>
                                         (adsbygoogle = window.adsbygoogle || []).push({ });
                                     </script> */}
+
+                                    <div>
+                                        {/* <!-- Ezoic - under_page_title - under_page_title --> */}
+                                        <div id="ezoic-pub-ad-placeholder-103"> </div>
+                                        {/* <!-- End Ezoic - under_page_title - under_page_title --> */}
+                                   </div>
                                     <br />
                                 </p>
                             </>

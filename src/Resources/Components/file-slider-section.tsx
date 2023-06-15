@@ -1,11 +1,14 @@
 import React from "react"
 import { IFileSliderSection } from "../../Interfaces"
-import { Button, CircularProgress } from "@mui/material"
+import { Button, CircularProgress, Skeleton } from "@mui/material"
 import { ArrowForward } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 
 export default function FileSliderSection(props: IFileSliderSection) {
     const { items, headline } = props
+
+    const [isLoadngImage, setisLoadngImage] = React.useState(true)
+
     return (
         <div className="section-container">
             <div className="space-between headline">
@@ -23,6 +26,12 @@ export default function FileSliderSection(props: IFileSliderSection) {
                                 to={item.fileDownloadLink ?? '#invalid-video-link'}
                                 className="file-slide-card">
                                 <div className="slider-thumb-wrap">
+                                    <Skeleton
+                                        variant="rectangular"
+                                        height={'100%'}
+                                        width={'100%'}
+                                        className="slide-card-thumb absolute-center"
+                                    />
                                     <img
                                         src={`${import.meta.env.VITE_APP_SV_UPLOADS}/${item.fileThumbnail}`}
                                         alt={item.fileUniqueId}
