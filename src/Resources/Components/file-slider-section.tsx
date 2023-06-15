@@ -23,6 +23,7 @@ export default function FileSliderSection(props: IFileSliderSection) {
                     items?.map((item) => {
                         return (
                             <Link
+                                key={item.fileId}
                                 to={item.fileDownloadLink ?? '#invalid-video-link'}
                                 className="file-slide-card">
                                 <div className="slider-thumb-wrap">
@@ -34,14 +35,15 @@ export default function FileSliderSection(props: IFileSliderSection) {
                                     />
                                     <img
                                         src={`${import.meta.env.VITE_APP_SV_UPLOADS}/${item.fileThumbnail}`}
-                                        alt={item.fileUniqueId}
+                                        // alt={item.fileUniqueId}
                                         loading="lazy"
                                         className="slide-card-thumb" />
-                                    {/* <video controls src={item.fileDownloadLink} onError={() => console.log(item.fileDownloadLink)}  >
-                                        <source src={item.fileDownloadLink} type={item.fileType} />
-                                    </video> */}
+                                    <p className="card-caption">
+                                        <br />
+                                        {item.fileCaption}
+                                    </p>
                                 </div>
-                                {/* <h3 className="h3-headline">banny banny</h3> */}
+                                <h3 className="h3-headline">{item.fileCaption}</h3>
                             </Link>
                         )
                     })

@@ -7,6 +7,12 @@ import useDownloader from "react-use-downloader"
 import { useLocalStorage, useWindowSize } from 'usehooks-ts'
 import { change, difference, msToTime, percentageOf, timeTo } from '../../../../Helpers'
 
+import 'vidstack/styles/defaults.css';
+import 'vidstack/styles/community-skin/video.css';
+
+import { MediaCommunitySkin, MediaOutlet, MediaPlayer, MediaPoster } from '@vidstack/react';
+
+
 export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['props']*/
 
     const { fileParentPath: url, fileIsLoading = false } = props
@@ -16,7 +22,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const [isPaused, setisPaused] = useState(false)
     const [isShowingDownloadOption, setisShowingDownloadOption] = useState(false)
     const [isPlayable, setisPlayable] = useState(false)
-    const [videoSource, setVideoSource] = React.useState<string | undefined>(url)
+    const [videoSource, setVideoSource] = React.useState<string>('https://stream.mux.com/VZtzUzGRv02OhRnZCxcNg49OilvolTqdnFLEqBsTwaxU/low.mp4')
     const [videoDuration, setvideoDuration] = useState(0)
     const [videoPlayedPercentage, setvideoPlayedPercentage] = useState(0)
     const [videoCurrentPlayTime, setvideoCurrentPlayTime] = useState('0')
@@ -38,7 +44,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         if (url) {
             setVideoSource(url)
         }
-    }, [videoRef, fileIsLoading, app.focusedFile?.id])
+    }, [videoRef, fileIsLoading, app.focusedFile?.id, props.fileParentPath])
 
     const playControlVariant = {
         show: { y: 0, display: 'flex' },
@@ -85,12 +91,12 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         if (isScrubbing) {
             e.preventDefault()
             videoRef?.current?.pause?.()
-            videoWasPaused= true
+            videoWasPaused = true
             handleCurrentPlayTimeChanged(percentage)
             $root?.style?.setProperty?.('--preview-position', `${percentage}%`)
         } else {
             if (videoWasPaused) {
-                videoWasPaused= false
+                videoWasPaused = false
                 videoRef?.current?.play?.()
             }
         }
@@ -211,7 +217,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         </motion.div >
     )
 
-
     return (
         <Box className='movie-view-card-container' >
 
@@ -227,12 +232,12 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                     {
                         (isPaused || fileIsLoading) || <motion.img
                             animate={{ x: 0 }}
-                            initial={{ x:-100 }}
+                            initial={{ x: -100 }}
                             exit={{ x: -100 }}
-                            src={props.fileThumbnail}
+                            src={`${import.meta.env.VITE_APP_SV_UPLOADS}/${props.fileThumbnail}`}
                             className='video-paused-overlay' />
                     }
-                    <motion.video
+                    {/* <motion.video
                         controls={false}
                         controlsList='nodownload'
                         onContextMenu={() => false}
@@ -256,7 +261,31 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         <source src={videoSource} type={props?.fileType} />
                         <source src={videoSource} type="video/ogg" />
                         <source src={videoSource} type="video/mpeg" />
-                    </motion.video>
+                    </motion.video> */}
+                    <MediaPlayer
+                        title={props?.fileCaption}
+                        aspect-ratio={16 / 9}
+                        crossorigin=""
+                        autoplay
+                        onContextMenu={() => false}
+                        className='video-player'
+                        onEnded={() => setisPaused(false)}
+                        src={videoSource}
+                        onError={console.log}
+                        poster={`${import.meta.env.VITE_APP_SV_UPLOADS}/${props.fileThumbnail}`}
+                        onPlaying={() => setisPaused(true)}
+                        onLoadedData={handleMetaDataloaded}
+                        onTimeUpdate={handlePlayTimeUpdate}
+                        onCanPlay={() => setisPlayable(true)}
+                        onPause={() => ''}
+                    // onError={(e) => { setisPlayable(false) }}
+                    >
+                        <MediaOutlet>
+                            <MediaPoster alt={props.fileCaption} />
+                        </MediaOutlet>
+                        <MediaCommunitySkin />
+                    </MediaPlayer>
+
                 </div>
 
                 <Backdrop
@@ -268,6 +297,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                 </Backdrop>
 
                 <div className="video-contraols-panel"
+                    style={{ display: 'none' }}
                     onMouseOver={() => setplaybackCtrlsHovered(true)}
                     onMouseOut={() => setplaybackCtrlsHovered(false)}    >
                     <div className="videoplayback-controls">
@@ -416,25 +446,16 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                                 <hr />
                                 <h2 className="h2-headline" style={{ maxWidth: '100%', marginBottom: '.7rem', wordWrap: 'normal', 'whiteSpace': 'pre-wrap' }}>
                                     {props.fileIsLoading ? <LinearProgress /> : ''}
-                                </h2>
-                                <p>
-                                    {props.fileCaption}
-                                    <br />
-                                    {/* <ins className="adsbygoogle"
-                                        style={{ display: 'block', alignContent: 'center' }}
-                                        data-ad-layout="in-article"
-                                        data-ad-format="fluid"
-                                        data-ad-client="ca-pub-9643693190346556"
-                                        data-ad-slot="8971255154"></ins>
-                                    <script>
-                                        (adsbygoogle = window.adsbygoogle || []).push({ });
-                                    </script> */}
-
                                     <div>
                                         {/* <!-- Ezoic - under_page_title - under_page_title --> */}
                                         <div id="ezoic-pub-ad-placeholder-103"> </div>
                                         {/* <!-- End Ezoic - under_page_title - under_page_title --> */}
-                                   </div>
+                                    </div>
+                                </h2>
+                                <p>
+                                    {props.fileCaption}
+                                    <br />
+
                                     <br />
                                 </p>
                             </>

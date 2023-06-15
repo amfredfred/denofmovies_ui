@@ -10,7 +10,6 @@ import { App, IApp, IQueryResponse } from "../../../Interfaces"
 import { useMutation, useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import FileSliderSection from "../../Components/file-slider-section"
-import { defaultMethod } from "react-router-dom/dist/dom"
 
 export default function Watch() {
     const [search] = useSearchParams({ v: '' })
@@ -31,33 +30,30 @@ export default function Watch() {
             headers: { "Content-Type": 'application/json' },
             url: `${import.meta.env.VITE_APP_SERVER_URL}/watch?v=${app?.focusedFile?.id}`
         }),
-        queryKey: ['file', "VIDEO_PALYING"],
-        enabled: Boolean(app.focusedFile?.id),
+        queryKey: ["REQUESTED_VIDEO_PALYING"],
         retry: true,
     })
-    
+
+    const Random = useQuery({
+        queryFn: async () => await axios<IQueryResponse>({
+            method: 'POST',
+            headers: { "Content-Type": 'application/json' },
+            url: `${import.meta.env.VITE_APP_SERVER_URL}/random`
+        }),
+        queryKey: ["RANDOM_VIDEO_PALYING"],
+        retry: true
+    })
+
     const files = useQuery({
         queryFn: async () => await axios<IQueryResponse[]>({
             method: 'POST',
-            data: { q: "a" },
             headers: { "Content-Type": 'application/json' },
             url: `${import.meta.env.VITE_APP_SERVER_URL}/search`
         }),
         queryKey: ['files'],
-        cacheTime: 0,
         refetchInterval: 20000,
+        enabled: (Random.isSuccess || Res.isSuccess),
         retry: true,
-    })
-
-    const Random = useMutation({
-        mutationFn: async ({ method, cid }: any) => await axios<IQueryResponse>({
-            method: 'POST',
-            data: { username: app.user?.username, method, cid },
-            headers: { "Content-Type": 'application/json' },
-            url: `${import.meta.env.VITE_APP_SERVER_URL}/random`
-        }),
-        mutationKey: ['files', [current_id]],
-        retry: true
     })
 
     usePageMeta({
@@ -70,37 +66,34 @@ export default function Watch() {
 
     useEffect(() => {
         if (search?.get('v')) {
-            if (app?.focusedFile?.id !== search?.get('v'))
-                handleFocusFileUpdate('id', search?.get('v'))
-            else
-                handleFocusFileUpdate('id', null)
+            handleFocusFileUpdate('id', search?.get('v'))
+            if (!post?.fileId || app.focusedFile?.id !== search?.get('v'))
+                Res.refetch({ 'exact': true })
         } else {
+            if (!post?.fileId)
+                Random.refetch()
             handleFocusFileUpdate('id', null)
         }
 
         if (Random.data?.data && !app?.focusedFile?.id) {
-            // Res.remove()
+            Res.remove()
+            console.log('SUCCdfdffdfESSSS')
             setisLoading(Random.isLoading)
             setpost(Random.data?.data)
-        } else if (Res.data?.data ) {
-            console.log('SUCCESSSS')
-            // Random.reset()
+        } else if (Res.data?.data) {
+            Random.remove()
             setisLoading(Res.isLoading)
             setpost(Res.data?.data)
         }
-        console.log(Random.failureReason, Res.data?.data, Random.isLoading)
+
         if (!Boolean(app.focusedFile?.id) && !Random.isLoading && !post && !Res?.isLoading) {
-            console.log('LOL')
-            Random.mutate('')
+            Random.refetch()
         }
-
-    }, [Res.data?.data, search])
-
-
+    }, [Res.data?.data, search, Random?.data?.data])
 
     const handleSkipMethod = (method, current_id) => {
         setcurrent_id(method === 'next' ? current_id + 1 : method === 'prev' ? current_id - 1 : current_id)
-        Random.mutate(method, current_id)
+        Random.refetch()
     }
 
     return (
@@ -120,7 +113,7 @@ export default function Watch() {
                 <FileSliderSection
                     headline={`Latest uploads`}
                     fileIsLoading={files.isLoading}
-                    items={files.data?.data ?? [{}, {}, {}] as any} />
+                    items={files.data?.data} />
             </main>
         </Box>
     )

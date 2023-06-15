@@ -1,6 +1,5 @@
 import { HashRouter, BrowserRouter, Routes as Routers, Route } from "react-router-dom";
 import E404 from "../Resources/Views/EPages/E404";
-import Home from "../Resources/Views/Watch";
 import Watch from "../Resources/Views/Watch";
 import GuestLayout from "../Resources/Layouts/GuestLayout";
 import React from "react";
@@ -8,6 +7,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { Backdrop, CircularProgress } from "@mui/material";
 import { useLocalStorage } from "usehooks-ts";
 import { App, IApp } from "../Interfaces";
+import HomePage from "../Resources/Views/Home";
 
 export default function Routes() {
 
@@ -47,7 +47,7 @@ export default function Routes() {
     const Guests = (
         <GuestLayout>
             <Routers>
-                <Route path="" element={<Home />} />
+                <Route path="" element={<HomePage />} />
                 <Route path="video" element={<Watch />} />
                 <Route path="*" element={<E404 />} />
             </Routers>

@@ -11,6 +11,7 @@ import ListResults from "./list-results";
 export default function SearchComponent(props: {}) {
     const [isFocused, setisFocused] = React.useState(false)
     const [app, setApp] = useLocalStorage<IApp>("@App", App)
+    const [openUserMenu, setopenUserMenu] = React.useState(false)
     const { width, height } = useWindowSize()
 
     const $query = useQuery({
@@ -21,8 +22,8 @@ export default function SearchComponent(props: {}) {
             url: `${import.meta.env.VITE_APP_SERVER_URL}/search`
         }),
         // refetchInterval: 4000,
-        enabled: Boolean(app.search.query),
-        retry: 5000,
+        enabled: Boolean(app.search.query && isFocused),
+        // retry: 5000,
     })
 
     const $search = (query: string) => $query.refetch()
@@ -49,9 +50,9 @@ export default function SearchComponent(props: {}) {
                         // onBlur={() => setisFocused(s => false)}
                         value={!app.search?.query?.startsWith?.(' ') ? app.search?.query : ''}
                         onChange={({ target: { value } }) => handleSearchInputUpdate('query', (value))}
-                        placeholder={`search: movies: ${Math.random()}`}
+                        placeholder={`Search... movies: `}
                     />
-                    <Button className="is-button">
+                    <Button className="is-icon">
                         <SearchOutlined />
                     </Button>
                     <motion.div
@@ -60,7 +61,7 @@ export default function SearchComponent(props: {}) {
                         className="search-results">
                         <LinearProgress />
                         <div className="results-container">
-                            <div className="space-between" >
+                            <div className="space-between"  style={{position:'sticky', top:'0', zIndex:'2', background:'var(--global-bg)'}}>
                                 <h3 className="h3-headline" style={{ textTransform: 'uppercase', fontWeight: '600' }}>
                                     {!app.search.query || <>Found <span className="blink">
                                         {$query.data?.data?.length}</span> Results For</>}&nbsp;
@@ -71,17 +72,28 @@ export default function SearchComponent(props: {}) {
                                     <Close />
                                 </Button>
                             </div>
-
                             <ListResults items={$query.data?.data} />
                         </div>
                     </motion.div>
                 </div>
                 <Button
-                    onClick={() => window.location.href = '//t.me/denofmovies_bot'}
-                    className={`${width <= 600 ? 'is-icon' : 'is-button bdr-5px'}`}>
+                    onClick={() => setopenUserMenu(s => !s)}
+                    className={`${width <= 600 ? 'is-icon' : 'is-button bdr-5px'} relative`}>
                     {width <= 600 || <span className="span-text">{app?.user?.username ?? 'open in telegram'}</span>} <ArrowDropDown />
+                    {!openUserMenu ||
+                        < motion.div
+                            variants={search_results_variant}
+                            animate={openUserMenu ? 'show' : 'hide'}
+                            onClick={() => window.location.href = '//t.me/denofmovies_bot'}
+                            className="user-drop-down">
+                            <div className="space-between">
+                                <span className="small-text">{app.user?.username ?? "Telegram"}</span>
+                            </div>
+                        </motion.div>
+                    }
                 </Button>
+
             </div>
-        </Box>
+        </Box >
     )
 }
