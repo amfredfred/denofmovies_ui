@@ -16,32 +16,20 @@ export default function Watch() {
     const [app, setApp] = useLocalStorage<IApp>("@App", App)
     const [post, setpost] = React.useState<IQueryResponse>()
     const [isLoading, setisLoading] = React.useState(false)
-    const [method, setmethod] = React.useState('random-one')
-    const [current_id, setcurrent_id] = React.useState(1)
 
     const handleFocusFileUpdate = (param: IApp['actions'], payload: any) => {
         setApp((prev) => prev = ({ ...prev, 'focusedFile': { ...prev.focusedFile, [param as any]: payload } }))
     }
 
-    const Res = useQuery({
+    const IRequest = useQuery({
         queryFn: async () => await axios<IQueryResponse>({
             method: 'GET',
             data: { v: app?.focusedFile?.id },
             headers: { "Content-Type": 'application/json' },
             url: `${import.meta.env.VITE_APP_SERVER_URL}/watch?v=${app?.focusedFile?.id}`
         }),
-        queryKey: ["REQUESTED_VIDEO_PALYING"],
-        retry: true,
-    })
-
-    const Random = useQuery({
-        queryFn: async () => await axios<IQueryResponse>({
-            method: 'POST',
-            headers: { "Content-Type": 'application/json' },
-            url: `${import.meta.env.VITE_APP_SERVER_URL}/random`
-        }),
-        queryKey: ["RANDOM_VIDEO_PALYING"],
-        retry: true
+        queryKey: ["files", app.focusedFile?.id],
+        retry: 1000,
     })
 
     const files = useQuery({
@@ -52,7 +40,7 @@ export default function Watch() {
         }),
         queryKey: ['files'],
         refetchInterval: 20000,
-        enabled: (Random.isSuccess || Res.isSuccess),
+        enabled: Boolean(post?.fileId),
         retry: true,
     })
 
@@ -64,37 +52,21 @@ export default function Watch() {
         title: !isLoading ? post?.fileCaption ?? "Watching now..." : "Wait"
     }, [])
 
+
     useEffect(() => {
-        if (search?.get('v')) {
-            handleFocusFileUpdate('id', search?.get('v'))
-            if (!post?.fileId || app.focusedFile?.id !== search?.get('v'))
-                Res.refetch({ 'exact': true })
-        } else {
-            if (!post?.fileId)
-                Random.refetch()
-            handleFocusFileUpdate('id', null)
-        }
+        const V = search.get('v')
+        if (V)
+            handleFocusFileUpdate('id', V)
+    }, [search.get('v')])
 
-        if (Random.data?.data && !app?.focusedFile?.id) {
-            Res.remove()
-            console.log('SUCCdfdffdfESSSS')
-            setisLoading(Random.isLoading)
-            setpost(Random.data?.data)
-        } else if (Res.data?.data) {
-            Random.remove()
-            setisLoading(Res.isLoading)
-            setpost(Res.data?.data)
+    useEffect(() => {
+        if (IRequest.data?.data && !IRequest.isLoading) {
+            setpost(IRequest.data?.data)
         }
-
-        if (!Boolean(app.focusedFile?.id) && !Random.isLoading && !post && !Res?.isLoading) {
-            Random.refetch()
+        return () => {
+            // IRequest.remove()
         }
-    }, [Res.data?.data, search, Random?.data?.data])
-
-    const handleSkipMethod = (method, current_id) => {
-        setcurrent_id(method === 'next' ? current_id + 1 : method === 'prev' ? current_id - 1 : current_id)
-        Random.refetch()
-    }
+    }, [IRequest.data?.data, app.focusedFile?.id, IRequest.isLoading])
 
     return (
         <Box className='main-page-contents'>
@@ -102,14 +74,10 @@ export default function Watch() {
             <main className="contents">
                 <div className="section-container">
                     <MovieViewVCard
-                        fileSkip={handleSkipMethod}
                         {...post}
-                        fileIsLoading={isLoading}
+                        fileIsLoading={IRequest.isLoading}
                     />
                 </div>
-                {/* <div className="section-container" style={{ display: 'flex', padding: 10 }}>
-                    <h1 style={{ margin: 'auto' }}>COMING SOON</h1>
-                </div> */}
                 <FileSliderSection
                     headline={`Latest uploads`}
                     fileIsLoading={files.isLoading}

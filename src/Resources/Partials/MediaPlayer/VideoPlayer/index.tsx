@@ -23,21 +23,11 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const [isShowingDownloadOption, setisShowingDownloadOption] = useState(false)
     const [isPlayable, setisPlayable] = useState(false)
     const [videoSource, setVideoSource] = React.useState<string>('https://stream.mux.com/VZtzUzGRv02OhRnZCxcNg49OilvolTqdnFLEqBsTwaxU/low.mp4')
-    const [videoDuration, setvideoDuration] = useState(0)
-    const [videoPlayedPercentage, setvideoPlayedPercentage] = useState(0)
-    const [videoCurrentPlayTime, setvideoCurrentPlayTime] = useState('0')
     const [isShwowingInfo, setisShwowingInfo] = useState(false)
     const { size, elapsed, percentage, download, cancel, error, isInProgress, } = useDownloader();
     const [videoNewName, setvideoNewName] = useState<string>(props.fileId as any)
     const [downloadLink, setdownloadLink] = useState<string | undefined>(undefined)
     const [isPendingDownload, setisPendingDownload] = useState<boolean>()
-    const [isPlayerHovered, setisPlayerHovered] = useState(false)
-    const [playbackCtrlsHovered, setplaybackCtrlsHovered] = useState(false)
-    const [nextButtonHovered, setnextButtonHovered] = useState(false)
-    const [isInFullScreenMode, setisInFullScreenMode] = useState(false)
-    const [currentVolumeRange, setcurrentVolumeRange] = useState(.3)
-    const [isScrubbing, setisScrubbing] = useState(false)
-    const [volumeControlHovered, setvolumeControlHovered] = useState(false)
     const { width, height } = useWindowSize()
 
     React.useEffect(() => {
@@ -53,69 +43,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         fullscreen: {}
     }
 
-
-    useEffect(() => {
-        const css_root = document.querySelector(':root') as any
-        css_root?.style?.setProperty('--download-progress', `${percentage}%`)
-
-    }, [percentage])
-
-    const handleTogglePlay = () => {
-        const paused = videoRef?.current?.paused;
-        videoRef.current?.setAttribute('currentTime', videoCurrentPlayTime)
-        paused ? videoRef?.current?.play() : videoRef?.current?.pause()
-        setisPaused(paused as any)
-    }
-
-    const handlePlayTimeUpdate = (e: any) => {
-        const $root = document.querySelector(':root') as any
-        const { currentTime, duration } = e.target
-        const playedPercentage = change(duration, currentTime)
-        $root?.style?.setProperty?.('--video-play-time', `${playedPercentage.percentage}%`)
-        setvideoPlayedPercentage(s => playedPercentage.percentage)
-        setvideoDuration(s => duration)
-        setvideoCurrentPlayTime(s => currentTime)
-    }
-
-    const handleCurrentPlayTimeChanged = (goto: number) => {
-        (videoRef?.current as any).currentTime = (goto / videoDuration)
-    }
-
-    const theCursonPosition = (e: any) => {
-        const timelineContainer = document.querySelector('.video-timeline-container')
-        const rect = timelineContainer?.getBoundingClientRect() as any
-        const percentage = Math.min(Math.max(0, e.screenX - rect?.x), rect.width) / rect.width * 100;
-        const $root = document.querySelector(':root') as any
-        $root?.style?.setProperty?.('--preview-position', `${percentage}%`)
-        let videoWasPaused = false
-        if (isScrubbing) {
-            e.preventDefault()
-            videoRef?.current?.pause?.()
-            videoWasPaused = true
-            handleCurrentPlayTimeChanged(percentage)
-            $root?.style?.setProperty?.('--preview-position', `${percentage}%`)
-        } else {
-            if (videoWasPaused) {
-                videoWasPaused = false
-                videoRef?.current?.play?.()
-            }
-        }
-        return { position: percentage }
-    }
-
-    const toggleScrubbing = (e: any) => {
-        console.log(e?.buttons === 1)
-        const timelineContainer = document.querySelector('.video-timeline-container')
-        timelineContainer?.classList.toggle('scrubbing', isScrubbing)
-        setisScrubbing(e?.buttons === 1)
-        handleVideoTimeline(e)
-    }
-
-    const handleVideoTimeline = (e: any) => {
-        const { position } = theCursonPosition(e)
-    }
-
-
     const downloadFile = async () => {
         let renamed = videoNewName
 
@@ -127,37 +54,8 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
 
     }
 
-    const handleMetaDataloaded = () => {
-        setcurrentVolumeRange(videoRef?.current?.volume as any)
-    }
-
     const handleExpandInfo = () => {
         setisShwowingInfo(s => !s)
-    }
-
-
-    const handleVolumeChange = (range: number) => {
-        setcurrentVolumeRange(range);
-        handleToggleMute(range <= 0);
-        (videoRef?.current as any).volume = range
-    }
-
-    const handleToggleMute = (muted?: boolean) => {
-        (videoRef?.current as any).muted = muted ?? !videoRef?.current?.muted
-    }
-
-    const handleToggleFullScreen = async () => {
-        const container = videoWrapperRef.current
-        try {
-            if (document.fullscreenElement) {
-                setisInFullScreenMode(false)
-                return await document.exitFullscreen();
-            }
-            await container?.requestFullscreen()
-            setisInFullScreenMode(true)
-        } catch (error) {
-            console.log(error)
-        }
     }
 
     const downloadOptions = (
@@ -219,16 +117,11 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
 
     return (
         <Box className='movie-view-card-container' >
-
             <motion.div
-                onMouseOver={() => setisPlayerHovered(s => true)}
-                onMouseOut={() => setisPlayerHovered(s => false)}
-                // onDoubleClick={handleToggleFullScreen}
                 className="video-wrapper"
                 ref={videoWrapperRef}
                 onContextMenu={() => { return false }}>
-                <div className="video-wrapper"
-                    onClick={handleTogglePlay}  >
+                <div className="video-wrapper" >
                     {
                         (isPaused || fileIsLoading) || <motion.img
                             animate={{ x: 0 }}
@@ -237,31 +130,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                             src={`${import.meta.env.VITE_APP_SV_UPLOADS}/${props.fileThumbnail}`}
                             className='video-paused-overlay' />
                     }
-                    {/* <motion.video
-                        controls={false}
-                        controlsList='nodownload'
-                        onContextMenu={() => false}
-                        className='video-player'
-                        onEnded={() => setisPaused(false)}
-                        playsInline
-                        src={videoSource}
-                        ref={videoRef}
-                        poster={props.fileThumbnail}
-                        onPlaying={() => setisPaused(true)}
-                        onLoadedData={handleMetaDataloaded}
-                        autoPlay
-                        // style={{ pointerEvents: 'none' }}
-                        onTimeUpdate={handlePlayTimeUpdate}
-                        onCanPlay={() => setisPlayable(true)}
-                        onPause={() => ''}
-                        onError={(e) => {
-                            setisPlayable(false)
-                        }}
-                    >
-                        <source src={videoSource} type={props?.fileType} />
-                        <source src={videoSource} type="video/ogg" />
-                        <source src={videoSource} type="video/mpeg" />
-                    </motion.video> */}
                     <MediaPlayer
                         title={props?.fileCaption}
                         aspect-ratio={16 / 9}
@@ -274,124 +142,21 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         onError={console.log}
                         poster={`${import.meta.env.VITE_APP_SV_UPLOADS}/${props.fileThumbnail}`}
                         onPlaying={() => setisPaused(true)}
-                        onLoadedData={handleMetaDataloaded}
-                        onTimeUpdate={handlePlayTimeUpdate}
                         onCanPlay={() => setisPlayable(true)}
                         onPause={() => ''}
-                    // onError={(e) => { setisPlayable(false) }}
                     >
                         <MediaOutlet>
                             <MediaPoster alt={props.fileCaption} />
                         </MediaOutlet>
                         <MediaCommunitySkin />
                     </MediaPlayer>
-
-                </div>
-
-                <Backdrop
-                    sx={{ color: '#fff', zIndex: 0, position: 'absolute' }}
-                    // open={open}
-                    // onClick={handleClose}
-                    open={isShowingDownloadOption || fileIsLoading || !isPlayable} >
-                    <CircularProgress color="inherit" />
-                </Backdrop>
-
-                <div className="video-contraols-panel"
-                    style={{ display: 'none' }}
-                    onMouseOver={() => setplaybackCtrlsHovered(true)}
-                    onMouseOut={() => setplaybackCtrlsHovered(false)}    >
-                    <div className="videoplayback-controls">
-                        <div className="timeline-wrapper">
-                            <div className="video-timeline-container"
-                                onMouseDown={(e) => toggleScrubbing(e)}
-                                onMouseUp={(e) => toggleScrubbing(e)}
-                                onMouseMove={handleVideoTimeline}>
-                                <div className="video-timeline"
-                                    video-play-time-percent={`${videoPlayedPercentage}%`}
-                                />
-                            </div>
-                        </div>
-                        <motion.div
-
-                            animate={
-                                (isInFullScreenMode && playbackCtrlsHovered && isPlayerHovered)
-                                    ? 'hovered' : (isPlayerHovered && !isInFullScreenMode)
-                                        ? 'hovered' : isPaused
-                                            ? "hide" :
-                                            'show'
-                            }
-                            variants={playControlVariant}
-                            className="space-between player-controls-buttons">
-                            <div className="space-between" style={{ flexGrow: 0, gap: 0 }}>
-                                <Button className='is-button transparent'
-                                    onClick={handleTogglePlay}
-                                    disabled={!isPlayable}  >
-                                    {isPaused ? <Pause /> : <PlayArrow />}
-                                </Button>
-                                <Button className='is-button  transparent'
-                                    onClick={() => props?.fileSkip?.('previous')}  >
-                                    <SkipPrevious />
-                                </Button>
-                                {/* Volume Controls */}
-                                <Button className='is-button  transparent'
-                                    onMouseOver={() => setvolumeControlHovered(s => true)}
-                                    onMouseOut={() => setvolumeControlHovered(s => false)}
-                                    disabled={!isPlayable} >
-                                    <div className="icons space-between"
-                                        onClick={() => handleToggleMute()}>
-                                        {videoRef?.current?.muted ?
-                                            <VolumeOff />
-                                            : currentVolumeRange >= .5
-                                                ? <VolumeUp />
-                                                : <VolumeDown />}
-                                    </div>
-                                    <motion.input
-                                        variants={{
-                                            show: { width: 60, display: 'block' },
-                                            hide: { width: 0, display: 'none' }
-                                        }}
-                                        animate={volumeControlHovered ? 'show' : 'hide'}
-                                        max={1}
-                                        step={0.01}
-                                        type='range'
-                                        onChange={({ target: { valueAsNumber } }) => handleVolumeChange(valueAsNumber)}
-                                        value={currentVolumeRange}
-                                    />
-                                </Button>
-
-                                <div className="playback-percentage">
-                                    <span className="small-text">
-                                        {msToTime(videoCurrentPlayTime as any)}&bull;{videoPlayedPercentage}%
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="space-between" style={{ flexGrow: 0, gap: 0 }}>
-                                <Button
-                                    onClick={handleToggleFullScreen}
-                                    className='is-button transparent'
-                                    disabled={!isPlayable}  >
-                                    {isInFullScreenMode ? <FullscreenExit /> : <Fullscreen />}
-                                </Button>
-                                <Button className='is-button  transparent'
-                                    onMouseOver={() => setnextButtonHovered(h => true)}
-                                    onMouseOut={() => setnextButtonHovered(h => false)}
-                                    onClick={() => props?.fileSkip?.('next', props?.fileId)}  >
-                                    <SkipNext />
-                                </Button>
-                                <Button className='is-button  transparent'
-                                    disabled={!isPlayable} >
-                                    <Settings />
-                                </Button>
-                            </div>
-                        </motion.div>
-                    </div>
                 </div>
             </motion.div>
 
             <div className="video-content-info">
                 <div className="space-between" style={{ paddingInline: '.4rem' }}>
-                    <h2 className="h2-headline">
-                        {props.fileIsLoading ? <LinearProgress /> : props.fileCaption}
+                    <h2 className="h2-headline" >
+                        {props.fileIsLoading ? <Skeleton animation="wave" variant="rectangular" width={'100%'} height={30} /> : props.fileCaption}
                     </h2>
                     <motion.div
                         animate={{ rotate: isShwowingInfo ? '0deg' : '90deg' }}  >
@@ -404,9 +169,12 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                 </div>
 
 
+                
+
                 <div
                     onDoubleClick={handleExpandInfo}
                     className="video-content-infos">
+                    {!props.fileIsLoading || <LinearProgress color="warning" variant="indeterminate" />}
                     <div className="play-info"
                         style={{ background: isShwowingInfo ? 'var(--global-box-bg)' : 'transparent' }}>
                         <div className="space-between">
@@ -445,17 +213,31 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                             <>
                                 <hr />
                                 <h2 className="h2-headline" style={{ maxWidth: '100%', marginBottom: '.7rem', wordWrap: 'normal', 'whiteSpace': 'pre-wrap' }}>
-                                    {props.fileIsLoading ? <LinearProgress /> : ''}
-                                    <div>
-                                        {/* <!-- Ezoic - under_page_title - under_page_title --> */}
-                                        <div id="ezoic-pub-ad-placeholder-103"> </div>
-                                        {/* <!-- End Ezoic - under_page_title - under_page_title --> */}
-                                    </div>
+                                    {props.fileCaption}
                                 </h2>
+                                <div
+                                    dangerouslySetInnerHTML={{
+                                        __html: ` 
+                                            <div>
+                                            <script type="text/javascript">
+                                                atOptions = {
+                                                    'key' : 'a69d7afc5f48e4dde57e499dc706adb1',
+                                                    'format' : 'iframe',
+                                                    'height' : 90,
+                                                    'width' : 728,
+                                                    'params' : {}
+                                                };
+                                                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://enginecorruptiontrice.com/a69d7afc5f48e4dde57e499dc706adb1/invoke.js"></scr' + 'ipt>');
+                                            </script>
+                                            </div>
+                                    `}}
+                                />
+                                {/* <!-- Ezoic - under_page_title - under_page_title --> */}
+                                <div id="ezoic-pub-ad-placeholder-103"> </div>
+                                {/* <!-- End Ezoic - under_page_title - under_page_title --> */}
                                 <p>
                                     {props.fileCaption}
                                     <br />
-
                                     <br />
                                 </p>
                             </>

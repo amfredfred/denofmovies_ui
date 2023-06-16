@@ -1,5 +1,5 @@
 export interface IQueryResponse {
-    fileUniqueId?:string
+    fileUniqueId?: string
     fileId?: number
     fileType?: string
     fileSize?: number
@@ -13,7 +13,7 @@ export interface IQueryResponse {
     fileDownloadLink?: string
     fileCaption?: string
     fileIsLoading: boolean
-    fileSkip?(method: 'next' | 'previous' | 'shuffle', id?:number): void
+    fileSkip?(method: 'next' | 'previous' | 'shuffle', id?: number): void
 }
 
 
@@ -27,8 +27,7 @@ export interface IFileSliderSection {
 }
 
 export interface IApp {
-    actions?: 'search' | 'focusedFile' | 'query' | 'filter' | 'type' | 'id'
-
+    actions?: 'search' | 'focusedFile' | 'query' | 'filter' | 'type' | 'id' | 'loading'
     search: {
         actions: 'query' | 'filter'
         query: string
@@ -36,9 +35,10 @@ export interface IApp {
     },
 
     focusedFile?: {
-        actions?: 'type' | 'id'
+        actions?: 'type' | 'id' | 'loading'
         type?: string,
         id?: string
+        loading?: boolean
     },
 
     user?: {

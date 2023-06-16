@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, LinearProgress } from "@mui/material";
 import { ArrowDropDown, Close, Menu, PersonAddAlt, SearchOutlined } from '@mui/icons-material'
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from 'framer-motion'
 import { useLocalStorage, useWindowSize } from 'usehooks-ts'
 import { App, IApp, IQueryResponse } from "../../Interfaces";
@@ -12,21 +12,32 @@ export default function SearchComponent(props: {}) {
     const [isFocused, setisFocused] = React.useState(false)
     const [app, setApp] = useLocalStorage<IApp>("@App", App)
     const [openUserMenu, setopenUserMenu] = React.useState(false)
+    const [results, setresults] = React.useState<IQueryResponse[]>()
     const { width, height } = useWindowSize()
 
     const $query = useQuery({
-        queryKey: ['search'],
+        queryKey: ['search', app.search.query],
         queryFn: async () => await axios<IQueryResponse[]>({
             method: 'POST',
             data: { q: app.search.query },
             url: `${import.meta.env.VITE_APP_SERVER_URL}/search`
         }),
-        // refetchInterval: 4000,
         enabled: Boolean(app.search.query && isFocused),
-        // retry: 5000,
+        refetchInterval:2000,
+        retry: true
     })
 
-    const $search = (query: string) => $query.refetch()
+    useEffect(() => {
+        if ($query.data?.data && $query.isFetched)
+            setresults($query.data?.data)
+        return () => {
+            if ($query.isError) {
+                $query.remove()
+            }
+        }
+    }, [app.search.query, $query.data?.data, $query.isLoading])
+
+    console.log($query.data?.data.length, $query.failureReason)
 
     const search_results_variant = {
         shown: { top: width <= 600 ? '3.4rem' : '110%', display: 'flex' },
@@ -34,7 +45,6 @@ export default function SearchComponent(props: {}) {
     }
 
     const handleSearchInputUpdate = async (param: IApp['search']['actions'], payload: string) => {
-        $search(payload)
         setApp((prev) => prev = ({ ...prev, 'search': { ...prev.search, [param]: payload } }))
     }
 
@@ -61,10 +71,10 @@ export default function SearchComponent(props: {}) {
                         className="search-results">
                         <LinearProgress />
                         <div className="results-container">
-                            <div className="space-between"  style={{position:'sticky', top:'0', zIndex:'2', background:'var(--global-bg)'}}>
+                            <div className="space-between" style={{ position: 'sticky', top: '0', zIndex: '2', background: 'var(--global-bg)' }}>
                                 <h3 className="h3-headline" style={{ textTransform: 'uppercase', fontWeight: '600' }}>
                                     {!app.search.query || <>Found <span className="blink">
-                                        {$query.data?.data?.length}</span> Results For</>}&nbsp;
+                                        {results?.length}</span> Results For</>}&nbsp;
                                     <span className="blink">{app.search.query}</span>
                                 </h3>
                                 <Button className="is-icon"
@@ -72,7 +82,7 @@ export default function SearchComponent(props: {}) {
                                     <Close />
                                 </Button>
                             </div>
-                            <ListResults items={$query.data?.data} />
+                            <ListResults items={results} />
                         </div>
                     </motion.div>
                 </div>
@@ -92,7 +102,6 @@ export default function SearchComponent(props: {}) {
                         </motion.div>
                     }
                 </Button>
-
             </div>
         </Box >
     )

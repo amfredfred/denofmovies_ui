@@ -1,4 +1,4 @@
-import { HashRouter, BrowserRouter, Routes as Routers, Route } from "react-router-dom";
+import { HashRouter, BrowserRouter, MemoryRouter,  Routes as Routers, Route } from "react-router-dom";
 import E404 from "../Resources/Views/EPages/E404";
 import Watch from "../Resources/Views/Watch";
 import GuestLayout from "../Resources/Layouts/GuestLayout";
@@ -64,9 +64,9 @@ export default function Routes() {
 
     return (
         <QueryClientProvider client={QClient}>
-            <BrowserRouter>
+            <MemoryRouter>
                 {Guests}
-            </BrowserRouter>
+            </MemoryRouter>
         </QueryClientProvider>
     )
 }

@@ -427,121 +427,8 @@
      -o-object-position: center;
  }
 
- .video-contraols-panel {
-     width: 100%;
-     position: absolute;
-     left: 0;
-     bottom: 0;
-     display: flex;
-     flex-direction: column;
-     align-content: space-between;
-     justify-content: space-between;
- }
-
- .videoplayback-controls {
-     width: 100%;
-     background: linear-gradient(transparent, var(--global-bg));
- }
-
- .player-controls-buttons {
-     overflow: hidden;
-     width: 100%;
- }
-
- .player-controls-buttons button {
-     min-width: 40px !important;
-     padding-inline: 0 !important;
-     height: 100% !important;
- }
-
- .timeline-wrapper {
-     width: 100%;
-     height: 3px;
-     display: flex;
-     align-items: center;
-     justify-content: space-between;
-     transition: height 10ms;
- }
-
- .scrubbing.timeline-wrapper:hover,
- .timeline-wrapper:hover {
-     height: 5px;
- }
-
- .video-timeline {
-     width: var(--video-play-time);
-     height: inherit;
-     position: relative;
-     cursor: pointer;
- }
-
- .video-timeline-container {
-     width: 100%;
-     height: 100%;
-     display: flex;
-     align-items: center;
-     position: relative;
-     background: var(--global-box-bg);
-     isolation: isolate;
- }
-
- .video-timeline-container:hover::after {
-     display: block;
- }
-
- .video-timeline-container::after {
-     position: absolute;
-     left: 0;
-     top: 50%;
-     background: rgba(255, 230, 230, 0.4);
-     height: 100%;
-     content: '';
-     transform: translate(0, -50%);
-     width: var(--preview-position);
-     z-index: -1;
-     display: none;
- }
-
- .video-timeline::before {
-     top: -2rem;
-     width: 30px;
-     text-align: center;
-     right: -20px;
-     content: attr(video-play-time-percent);
-     border-radius: 3px;
-     font-size: 8px;
-     transition: background 400ms;
-     display: none;
-     background: rgba(72, 66, 66, 0.5);
-     padding: .1rem .2rem;
-     position: absolute;
- }
-
- .video-timeline::after {
-     width: 13px;
-     background: inherit;
-     aspect-ratio: 1/1;
-     z-index: 2;
-     position: absolute;
-     right: -7px;
-     top: 50%;
-     content: '';
-     transform: translate(0, -50%);
-     border-radius: 50px;
-     cursor: grab;
-     font-size: 8px;
-     transition: background 400ms;
-     box-shadow: 0 0 3px var(--global-color);
-     display: none;
- }
-
- .scrubbing.timeline-wrapper .video-timeline:hover::after,
- .scrubbing.timeline-wrapper .video-timeline:hover::before,
- .video-timeline:hover::after,
- .video-timeline:hover::before {
-     display: block;
- }
-
+ 
+ 
  /* .video-player::after {
      position: absolute;
      left: 0;
@@ -607,6 +494,7 @@
      overflow: hidden;
      text-overflow: ellipsis;
      white-space: nowrap;
+     min-height: 30px;
  }
 
  .card-caption {
