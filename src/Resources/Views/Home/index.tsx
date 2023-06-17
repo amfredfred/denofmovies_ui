@@ -21,6 +21,7 @@ export default function HomePage() {
         retry: true,
     })
 
+    console.log(files.failureReason)
 
     return (
         <Box className='main-page-contents'>

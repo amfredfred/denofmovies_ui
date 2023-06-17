@@ -1,6 +1,7 @@
 export interface IQueryResponse {
     fileUniqueId?: string
     fileId?: number
+    filePath?:string
     fileType?: string
     fileSize?: number
     fileUploader?: string

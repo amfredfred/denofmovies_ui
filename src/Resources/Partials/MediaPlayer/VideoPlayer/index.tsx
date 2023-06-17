@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Backdrop, Box, Button, CircularProgress, LinearProgress, Rating, Skeleton, Slider, Tooltip } from '@mui/material'
-import { ArrowBack, Cancel, Close, Download, DownloadTwoTone, Expand, ExpandLess, ExpandMore, FavoriteOutlined, Fullscreen, FullscreenExit, Info, OpenInBrowser, OpenInNewTwoTone, Pause, PauseCircle, PlayArrow, RemoveRedEye, Save, Settings, SkipNext, SkipPrevious, Telegram, VolumeDown, VolumeOff, VolumeUp } from '@mui/icons-material'
+import { ArrowBack, ArrowForward, Cancel, Close, Download, DownloadTwoTone, Expand, ExpandLess, ExpandMore, FavoriteOutlined, Fullscreen, FullscreenExit, Info, OpenInBrowser, OpenInNewTwoTone, Pause, PauseCircle, PlayArrow, RemoveRedEye, Save, Settings, SkipNext, SkipPrevious, Telegram, VolumeDown, VolumeOff, VolumeUp, Web } from '@mui/icons-material'
 import { motion } from 'framer-motion'
 import { App, IApp, IQueryResponse } from '../../../../Interfaces'
 import useDownloader from "react-use-downloader"
@@ -11,11 +11,13 @@ import 'vidstack/styles/defaults.css';
 import 'vidstack/styles/community-skin/video.css';
 
 import { MediaCommunitySkin, MediaOutlet, MediaPlayer, MediaPoster } from '@vidstack/react';
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
 
 
 export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['props']*/
 
-    const { fileParentPath: url, fileIsLoading = false } = props
+    const { filePath: url, fileIsLoading = false } = props
     const [app] = useLocalStorage<IApp>('@App', App)
     const videoRef = useRef<HTMLVideoElement | null>(null)
     const videoWrapperRef = useRef<HTMLDivElement>(null)
@@ -25,38 +27,47 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     const [videoSource, setVideoSource] = React.useState<string>('https://stream.mux.com/VZtzUzGRv02OhRnZCxcNg49OilvolTqdnFLEqBsTwaxU/low.mp4')
     const [isShwowingInfo, setisShwowingInfo] = useState(false)
     const { size, elapsed, percentage, download, cancel, error, isInProgress, } = useDownloader();
-    const [videoNewName, setvideoNewName] = useState<string>(props.fileId as any)
-    const [downloadLink, setdownloadLink] = useState<string | undefined>(undefined)
+    const [downloadType, setdownloadType] = useState<'document' | 'zip'>('document')
+    const [downloadMethod, setdownloadMethod] = useState<'web' | 'telegram'>('telegram')
     const [isPendingDownload, setisPendingDownload] = useState<boolean>()
     const { width, height } = useWindowSize()
 
     React.useEffect(() => {
         if (url) {
-            setVideoSource(url)
+            setVideoSource(`${import.meta.env.VITE_APP_SV_UPLOADS}/${url}`)
         }
+
+        console.log(`${import.meta.env.VITE_APP_SV_UPLOADS}/${url}`)
     }, [videoRef, fileIsLoading, app.focusedFile?.id, props.fileParentPath])
 
-    const playControlVariant = {
-        show: { y: 0, display: 'flex' },
-        hide: { y: 100, display: 'none' },
-        hovered: { display: 'flex' },
-        fullscreen: {}
-    }
 
-    const downloadFile = async () => {
-        let renamed = videoNewName
+    React.useEffect(() => {
 
-        if (downloadLink) {
-            console.log(renamed, downloadLink)
-            await download(downloadLink as any, renamed)
-            return
-        }
-
-    }
+    }, [])
 
     const handleExpandInfo = () => {
         setisShwowingInfo(s => !s)
     }
+
+
+    const downloader = useMutation({
+        mutationFn: async (methodd: any) => await axios({
+            url: `${import.meta.env.VITE_APP_SERVER_URL}/download`,
+            method: 'post',
+            data: {
+                username: 'idevfred',
+                compressed: downloadType,
+                link: props.fileParentPath,
+                uid: props.fileUniqueId,
+                method: methodd
+
+            },
+        }),
+        mutationKey: ['downloads']
+    });
+
+    const handleDownload = (methodd: 'web' | 'telegram' = 'web') => downloader.mutate(methodd)
+    console.log(downloader.failureReason)
 
     const downloadOptions = (
         <motion.div className="download-options">
@@ -78,37 +89,42 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                             <ArrowBack />
                         </Button>
                         <Button className='is-button'
-                            onClick={() => { }}>
-                            <span className="span-text no-break">Send in Telegram </span>
-                            <Telegram />
+                            disabled={downloader.isLoading}
+                            onClick={() => handleDownload('telegram')}>
+                            <span className="span-text no-break">Send in Telegram </span>&nbsp;
+                            {downloader.isSuccess ? <DownloadTwoTone /> :
+                                downloader?.isLoading ?
+                                    <CircularProgress color="success" size={12} /> :
+                                    <Telegram />
+                            }
                         </Button>
                         <Button className='is-button'
-                            onClick={downloadFile} >
-                            <span className="span-text no-break">Download</span>
-                            <Download />
+                            disabled={downloader.isLoading}
+                            onClick={() => handleDownload('web')}>
+                            <span className="span-text no-break">Web Download</span>
+                            <Web />
                         </Button>
                         <Button className='is-icon'
-                            onClick={() => window.open(downloadLink, '_blank')}
+                            onClick={() => window.open(props.fileParentPath, '_blank')}
                             style={{ display: 'flex', alignItems: 'center' }}>
                             <OpenInNewTwoTone />
                         </Button>
                     </>
                     : <>
-                        <Button className='is-button'
-                            onClick={() => {
-                                setdownloadLink(s => '')
-                                setisPendingDownload(true)
-                            }}>
-                            <span className="span-text no-break">Zip {props?.fileSize} </span>
-                            <Download />
+                        <Button className={`is-button ${(downloadType === 'zip') ? 'active' : ''}`}
+                            disabled={downloadType === 'zip'}
+                            onClick={() => setdownloadType('zip')}>
+                            <span className="span-text no-break">Zip{/*{props?.fileSize}MB*/}</span>
                         </Button>
-                        <Button className='is-button'
-                            onClick={() => {
-                                setdownloadLink(s => props.fileParentPath)
-                                setisPendingDownload(true)
-                            }}>
-                            <span className="span-text no-break">{props?.fileSize}</span>
-                            <Download />
+                        <Button className={`is-button ${(downloadType === 'document') ? 'active' : ''}`}
+                            disabled={(downloadType === 'document')}
+                            onClick={() => setdownloadType('document')}>
+                                <span className="span-text no-break">{(props?.fileSize)?.toFixed?.(2)}MB</span>
+                        </Button>
+                        <Button
+                            className='is-icon'
+                            onClick={() => setisPendingDownload(true)}>
+                            <DownloadTwoTone />
                         </Button>
                     </>
             }
@@ -167,10 +183,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         </Button>
                     </motion.div>
                 </div>
-
-
-                
-
                 <div
                     onDoubleClick={handleExpandInfo}
                     className="video-content-infos">

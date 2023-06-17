@@ -31,15 +31,17 @@ export default function Routes() {
 
             if (Telegram.backgroundColor) {
                 const rootStyle = document.querySelector(':root') as any
-                rootStyle.style.setProperty('--global-bg', bg_color || Telegram.headerColor || Telegram.backgroundColor)
+                rootStyle.style.setProperty('--global-bg', bg_color ?? Telegram.headerColor ?? Telegram.backgroundColor)
                 rootStyle.style.setProperty('--text-color', text_color)
-                rootStyle.style.setProperty('--global-color', link_color)
+                rootStyle.style.setProperty('--global-color', text_color)
                 rootStyle.style.setProperty('--global-bg', Telegram.backgroundColor)
             }
 
             if (Telegram.initDataUnsafe?.user) {
                 setApp(s => s = { ...s, user: { ...(Telegram.initDataUnsafe?.user as any), platform: Telegram.platform } })
             }
+
+            console.log(Telegram)
         }
     }, [])
 
@@ -64,9 +66,9 @@ export default function Routes() {
 
     return (
         <QueryClientProvider client={QClient}>
-            <MemoryRouter>
+            <HashRouter>
                 {Guests}
-            </MemoryRouter>
+            </HashRouter>
         </QueryClientProvider>
     )
 }

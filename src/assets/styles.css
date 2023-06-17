@@ -13,7 +13,7 @@
      --font-poppins: 'Poppins', sans-serif;
      --color-shadow-medium: 0 3px 6px #1c2128;
      --color-shadow-large: 0 8px 24px #1c2128;
-     --color-shadow-extra-large: 0 10px 15px #281c1c;
+     --color-shadow-extra-large: 0 10px 15px -10px #b8b8b8;
      --download-progress: 0%;
      --dager-bg: red;
      --text-color: white;
@@ -42,6 +42,10 @@
      height: 100vh;
      width: 100vw;
      overflow: hidden;
+ }
+
+ button.active {
+     background: green !important;
  }
 
 
@@ -427,8 +431,8 @@
      -o-object-position: center;
  }
 
- 
- 
+
+
  /* .video-player::after {
      position: absolute;
      left: 0;
@@ -452,7 +456,7 @@
      margin-top: .5rem;
      min-height: min-content;
      height: max-content;
-        background: var(--thick-grey);
+     background: var(--thick-grey);
      overflow: hidden;
      transition: height 700ms;
  }
@@ -598,6 +602,7 @@
  .headline {
      padding-inline: 1rem;
  }
+
  input[type="range"] {
      -webkit-appearance: none;
      appearance: none;
@@ -605,14 +610,17 @@
      cursor: pointer;
      /* width: 15rem; */
  }
+
  input[type="range"]:focus {
      outline: none;
  }
+
  input[type="range"]::-webkit-slider-runnable-track {
      background-color: #053a5f;
      border-radius: 0.5rem;
      height: 0.5rem;
  }
+
  input[type="range"]::-webkit-slider-thumb {
      -webkit-appearance: none;
      appearance: none;
@@ -628,11 +636,13 @@
      outline: 3px solid #053a5f;
      outline-offset: 0.125rem;
  }
+
  input[type="range"]::-moz-range-track {
      background-color: #053a5f;
      border-radius: 0.5rem;
      height: 0.5rem;
  }
+
  input[type="range"]::-moz-range-thumb {
      border: none;
      border-radius: 0;
@@ -640,6 +650,7 @@
      height: 2rem;
      width: 1rem;
  }
+
  input[type="range"]:focus::-moz-range-thumb {
      border: 1px solid #053a5f;
      outline: 3px solid #053a5f;
@@ -651,9 +662,9 @@
          padding: 0;
      }
 
-     .file-slide-card{
-        width: clamp(33% - 1rem, 200px, 100%);
-        flex-grow: 1;
+     .file-slide-card {
+         width: clamp(33% - 1rem, 200px, 100%);
+         flex-grow: 1;
      }
 
      .searcch-bar-contaner {
@@ -692,8 +703,8 @@
          border-radius: 0;
      }
 
-     .video-content-infos{
-        border-radius: 0;
+     .video-content-infos {
+         border-radius: 0;
      }
 
      ::-webkit-scrollbar {
