@@ -37,8 +37,6 @@ export default function SearchComponent(props: {}) {
         }
     }, [app.search.query, $query.data?.data, $query.isLoading])
 
-    console.log($query.data?.data.length, $query.failureReason)
-
     const search_results_variant = {
         shown: { top: width <= 600 ? '3.4rem' : '110%', display: 'flex' },
         hide: { top: 10, display: 'none' }

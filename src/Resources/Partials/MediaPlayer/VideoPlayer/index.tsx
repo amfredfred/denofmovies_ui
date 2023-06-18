@@ -36,8 +36,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         if (url) {
             setVideoSource(`${import.meta.env.VITE_APP_SV_UPLOADS}/${url}`)
         }
-
-        console.log(`${import.meta.env.VITE_APP_SV_UPLOADS}/${url}`)
     }, [videoRef, fileIsLoading, app.focusedFile?.id, props.fileParentPath])
 
 
@@ -45,10 +43,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
 
     }, [])
 
-    const handleExpandInfo = () => {
-        setisShwowingInfo(s => !s)
-    }
-
+    const handleExpandInfo = () => setisShwowingInfo(s => !s)
 
     const downloader = useMutation({
         mutationFn: async (methodd: any) => await axios({
@@ -67,7 +62,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     });
 
     const handleDownload = (methodd: 'web' | 'telegram' = 'web') => downloader.mutate(methodd)
-    console.log(downloader.failureReason)
 
     const downloadOptions = (
         <motion.div className="download-options">
@@ -92,10 +86,13 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                             disabled={downloader.isLoading}
                             onClick={() => handleDownload('telegram')}>
                             <span className="span-text no-break">Send in Telegram </span>&nbsp;
-                            {downloader.isSuccess ? <DownloadTwoTone /> :
+                            <Telegram />
+                        </Button>
+                        <Button className='is-icon'>
+                            {downloader.isSuccess ? '' :
                                 downloader?.isLoading ?
                                     <CircularProgress color="success" size={12} /> :
-                                    <Telegram />
+                                    ''
                             }
                         </Button>
                         <Button className='is-button'
@@ -119,7 +116,7 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                         <Button className={`is-button ${(downloadType === 'document') ? 'active' : ''}`}
                             disabled={(downloadType === 'document')}
                             onClick={() => setdownloadType('document')}>
-                                <span className="span-text no-break">{(props?.fileSize)?.toFixed?.(2)}MB</span>
+                            <span className="span-text no-break">{(props?.fileSize)?.toFixed?.(2)}MB</span>
                         </Button>
                         <Button
                             className='is-icon'
