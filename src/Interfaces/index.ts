@@ -1,7 +1,7 @@
 export interface IQueryResponse {
     fileUniqueId?: string
     fileId?: number
-    filePath?:string
+    filePath?: string
     fileType?: string
     fileSize?: number
     fileUploader?: string
@@ -38,7 +38,8 @@ export interface IApp {
     focusedFile?: {
         actions?: 'type' | 'id' | 'loading'
         type?: string,
-        id?: string
+        id?: string,
+        paused?: boolean
         loading?: boolean
     },
 
@@ -52,6 +53,9 @@ export interface IApp {
         platform: string
     }
 
+    sideBar?: {
+        open?: boolean
+    }
 }
 
 export const App: IApp = {

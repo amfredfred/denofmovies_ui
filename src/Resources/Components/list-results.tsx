@@ -6,6 +6,7 @@ import ListItemText from '@mui/material/ListItemText';
 import { IQueryResponse } from '../../Interfaces';
 import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { PlayArrow } from '@mui/icons-material';
 
 export default function ListResults(props: { items?: IQueryResponse[] }) {
 
@@ -15,7 +16,10 @@ export default function ListResults(props: { items?: IQueryResponse[] }) {
         <List style={{ background: 'transparent', width: '100%' }} className='search-results-list'>
             {
                 items?.map((item) =>
-                    <Link className='' key={item.fileId} to={item.fileDownloadLink || '#invalid-link'}>
+                    <Link className=''
+                        key={item.fileId}
+                        to={`/${item.fileDownloadLink}` ?? '#invalid-video-link'}
+                    >
                         <ListItem className="result-list-item">
                             <img
                                 loading='lazy'
@@ -25,13 +29,16 @@ export default function ListResults(props: { items?: IQueryResponse[] }) {
                             />
                             <ListItemText
                                 style={{ paddingInline: '.4rem', textTransform: 'capitalize' }}
-                                primary={''.concat(item.fileUploader as any)}
+                                // primary={''.concat(item.fileUploader as any)}
                                 secondary={
-                                    <h3 className='list-item-caption'>
+                                    <p className='list-item-caption'>
                                         {item.fileCaption}
-                                    </h3>
+                                    </p>
                                 }
                             />
+                            <Button className="is-icon">
+                                <PlayArrow />
+                            </Button>
                         </ListItem>
                         <Divider variant="inset" component="li" />
                     </Link>)

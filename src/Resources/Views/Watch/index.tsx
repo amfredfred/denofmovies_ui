@@ -79,7 +79,7 @@ export default function Watch() {
                     />
                 </div>
                 <FileSliderSection
-                    headline={`Latest uploads`}
+                    headline={`New uploads`}
                     fileIsLoading={files.isLoading}
                     items={files.data?.data} />
             </main>

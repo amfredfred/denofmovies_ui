@@ -13,6 +13,7 @@ export default function SearchComponent(props: {}) {
     const [app, setApp] = useLocalStorage<IApp>("@App", App)
     const [openUserMenu, setopenUserMenu] = React.useState(false)
     const [results, setresults] = React.useState<IQueryResponse[]>()
+    const [searchNow, setsearchNow] = React.useState(false)
     const { width, height } = useWindowSize()
 
     const $query = useQuery({
@@ -22,15 +23,22 @@ export default function SearchComponent(props: {}) {
             data: { q: app.search.query },
             url: `${import.meta.env.VITE_APP_SERVER_URL}/search`
         }),
-        enabled: Boolean(app.search.query && isFocused),
-        refetchInterval: 2000,
-        retry: true
+        enabled: Boolean(app.search.query && isFocused && searchNow),
+        retry: 0,
+        cacheTime: 5000
     })
 
     useEffect(() => {
         if ($query.data?.data && $query.isFetched)
             setresults($query.data?.data)
+
+        const timeOut = setTimeout(() => {
+            setsearchNow(true)
+        }, 1000);
+
         return () => {
+            clearTimeout(timeOut)
+            setsearchNow(false)
             if ($query.isError) {
                 $query.remove()
             }
@@ -45,8 +53,6 @@ export default function SearchComponent(props: {}) {
     const handleSearchInputUpdate = async (param: IApp['search']['actions'], payload: string) => {
         setApp((prev) => prev = ({ ...prev, 'search': { ...prev.search, [param]: payload } }))
     }
-
-    console.log($query.failureReason)
 
     return (
         <Box className='searcch-bar-contaner'>
@@ -69,12 +75,14 @@ export default function SearchComponent(props: {}) {
                     <motion.div
                         variants={search_results_variant}
                         animate={isFocused ? 'show' : 'hide'}
-                        className="search-results">
+                        className="search-results"
+                        data-searching={app.search.query}
+                    >
                         {!$query.isLoading || <LinearProgress />}
                         <div className="results-container">
                             <div className="space-between" style={{ position: 'sticky', top: '0', zIndex: '2', background: 'var(--thick-grey)' }}>
-                                <h3 className="h3-headline" style={{ textTransform: 'uppercase', fontWeight: '600' }}>
-                                    {!app.search.query || <>Found <span className="blink">
+                                <h3 className="h3-headline" style={{ textTransform: 'uppercase', fontWeight: '600', paddingLeft: 0 }}>
+                                    {!app.search.query ? <span> </span> : <>Found <span className="blink">
                                         {results?.length}</span> Results For</>}&nbsp;
                                     <span className="blink">{app.search.query}</span>
                                 </h3>
@@ -83,7 +91,9 @@ export default function SearchComponent(props: {}) {
                                     <Close />
                                 </Button>
                             </div>
-                            <ListResults items={results} />
+                            <ListResults
+                                items={results}
+                            />
                         </div>
                     </motion.div>
                 </div>

@@ -34,7 +34,6 @@ export default function Routes() {
                 rootStyle.style.setProperty('--global-bg', bg_color ?? Telegram.headerColor ?? Telegram.backgroundColor)
                 rootStyle.style.setProperty('--text-color', text_color)
                 rootStyle.style.setProperty('--global-color', text_color)
-                rootStyle.style.setProperty('--global-bg', Telegram.backgroundColor)
             }
 
             if (Telegram.initDataUnsafe?.user) {
@@ -66,9 +65,9 @@ export default function Routes() {
 
     return (
         <QueryClientProvider client={QClient}>
-            <MemoryRouter>
+            <BrowserRouter basename="/">
                 {Guests}
-            </MemoryRouter>
+            </BrowserRouter>
         </QueryClientProvider>
     )
 }
