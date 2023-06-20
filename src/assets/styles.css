@@ -6,14 +6,15 @@
      --global-color: aliceblue;
      --global-box-bg: #1c2128;
      --new-box-bg: #2d333b;
-     --thick-grey: rgba(28, 28, 28, 0.5);
+     --thick-grey: rgb(21, 69, 84);
      --font-lato: 'Lato', sans-serif;
+    --thick-button-grey:rgb(19, 31, 40);
      --font-nunito: 'Nunito Sans', sans-serif;
      --font-roboto: 'Roboto', sans-serif;
      --font-poppins: 'Poppins', sans-serif;
      --color-shadow-medium: 0 3px 6px #1c2128;
      --color-shadow-large: 0 8px 24px #1c2128;
-     --color-shadow-extra-large: 0 10px 15px -10px #b8b8b8;
+     --color-shadow-extra-large: 0 4px 15px  #050505;
      --download-progress: 0%;
      --dager-bg: red;
      --text-color: white;
@@ -45,7 +46,7 @@
  }
 
  button.active {
-     background: green !important;
+     background: rgb(0, 111, 126) !important;
  }
 
 
@@ -146,13 +147,13 @@
      border-radius: 50px !important;
      aspect-ratio: 1/1 !important;
      min-width: max-content;
-     background: var(--thick-grey);
+     background: var(--thick-button-grey);
      color: var(--global-color);
      /* box-shadow: 0 0 2px inset var(--global-color); */
  }
 
  button.is-button {
-     background: var(--thick-grey);
+     background: var(--thick-button-grey);
      border-radius: 0 !important;
      width: max-content !important;
      padding-inline: .5rem !important;
@@ -201,9 +202,11 @@
  }
 
  .result-list-thumb {
-     width: 50px;
-     aspect-ratio: 1/1;
+     width: 70px;
+     aspect-ratio:16/9;
      border-radius: 5px;
+     object-fit: cover;
+     -o-object-fit: contain;
  }
 
  .span-text.no-break {
@@ -231,7 +234,7 @@
      width: 100%;
      position: absolute;
      top: 110%;
-     background: var(--global-bg);
+     background: var(--thick-grey);
      box-shadow: var(--color-shadow-extra-large);
      border-radius: 10px;
      min-height: 100px;
@@ -255,7 +258,7 @@
      border-radius: 5px;
      right: 0;
      z-index: 2;
-     background: var(--global-bg);
+     background: var(--thick-grey);
      top: 110%;
      box-shadow: var(--color-shadow-extra-large);
      min-width: 100%;

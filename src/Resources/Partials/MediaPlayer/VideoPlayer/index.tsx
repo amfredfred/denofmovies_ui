@@ -44,6 +44,8 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
     }, [])
 
     const handleExpandInfo = () => setisShwowingInfo(s => !s)
+    const handleDownload = (methodd: 'web' | 'telegram' = 'web') => downloader.mutate(methodd)
+    const webDownload = async () => await download(videoSource, 'video.mp4')
 
     const downloader = useMutation({
         mutationFn: async (methodd: any) => await axios({
@@ -61,7 +63,6 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
         mutationKey: ['downloads']
     });
 
-    const handleDownload = (methodd: 'web' | 'telegram' = 'web') => downloader.mutate(methodd)
 
     const downloadOptions = (
         <motion.div className="download-options">
@@ -95,14 +96,17 @@ export default function MovieViewVCard(props: IQueryResponse) { /*VidPlayer['pro
                                     ''
                             }
                         </Button>
-                        <Button className='is-button'
-                            disabled={downloader.isLoading}
-                            onClick={() => handleDownload('web')}>
-                            <span className="span-text no-break">Web Download</span>
-                            <Web />
-                        </Button>
+                        {downloadType !== 'zip' &&
+                            <Button className='is-button'
+                                disabled={downloader.isLoading}
+                                onClick={webDownload}>
+                                {/* () => handleDownload('web') */}
+                                <span className="span-text no-break">Web Download</span>
+                                <Web />
+                            </Button>
+                        }
                         <Button className='is-icon'
-                            onClick={() => window.open(props.fileParentPath, '_blank')}
+                            onClick={() => window.open(videoSource, '_blank')}
                             style={{ display: 'flex', alignItems: 'center' }}>
                             <OpenInNewTwoTone />
                         </Button>

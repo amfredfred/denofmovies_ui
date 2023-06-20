@@ -66,9 +66,9 @@ export default function Routes() {
 
     return (
         <QueryClientProvider client={QClient}>
-            <HashRouter>
+            <MemoryRouter>
                 {Guests}
-            </HashRouter>
+            </MemoryRouter>
         </QueryClientProvider>
     )
 }

@@ -23,7 +23,7 @@ export default function SearchComponent(props: {}) {
             url: `${import.meta.env.VITE_APP_SERVER_URL}/search`
         }),
         enabled: Boolean(app.search.query && isFocused),
-        refetchInterval:2000,
+        refetchInterval: 2000,
         retry: true
     })
 
@@ -46,11 +46,14 @@ export default function SearchComponent(props: {}) {
         setApp((prev) => prev = ({ ...prev, 'search': { ...prev.search, [param]: payload } }))
     }
 
+    console.log($query.failureReason)
+
     return (
         <Box className='searcch-bar-contaner'>
             <div className="space-between">
                 <Button className="is-icon"> <Menu /></Button>
                 <div className="input-container">
+
                     <input
                         type="text"
                         className="text-input"
@@ -67,9 +70,9 @@ export default function SearchComponent(props: {}) {
                         variants={search_results_variant}
                         animate={isFocused ? 'show' : 'hide'}
                         className="search-results">
-                        <LinearProgress />
+                        {!$query.isLoading || <LinearProgress />}
                         <div className="results-container">
-                            <div className="space-between" style={{ position: 'sticky', top: '0', zIndex: '2', background: 'var(--global-bg)' }}>
+                            <div className="space-between" style={{ position: 'sticky', top: '0', zIndex: '2', background: 'var(--thick-grey)' }}>
                                 <h3 className="h3-headline" style={{ textTransform: 'uppercase', fontWeight: '600' }}>
                                     {!app.search.query || <>Found <span className="blink">
                                         {results?.length}</span> Results For</>}&nbsp;
@@ -86,10 +89,12 @@ export default function SearchComponent(props: {}) {
                 </div>
                 <Button
                     onClick={() => setopenUserMenu(s => !s)}
-                    className={`${width <= 600 ? 'is-icon' : 'is-button bdr-5px'} relative`}>
-                    {width <= 600 || <span className="span-text">{app?.user?.username ?? 'open in telegram'}</span>} <ArrowDropDown />
+                    className={`${width <= 600 ? 'is-icon' : 'is-icon'} relative`}>
+                    {/* {width <= 600 || <span className="span-text">{app?.user?.username}</span>} */}
+                    {/* ?? 'open in telegram' */}
+                    <ArrowDropDown />
                     {!openUserMenu ||
-                        < motion.div
+                        <motion.div
                             variants={search_results_variant}
                             animate={openUserMenu ? 'show' : 'hide'}
                             onClick={() => window.location.href = '//t.me/denofmovies_bot'}
