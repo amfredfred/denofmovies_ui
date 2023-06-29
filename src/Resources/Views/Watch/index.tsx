@@ -70,19 +70,17 @@ export default function Watch() {
 
     return (
         <Box className='main-page-contents'>
-            <SearchComponent />
-            <main className="contents">
-                <div className="section-container">
-                    <MovieViewVCard
-                        {...post}
-                        fileIsLoading={IRequest.isLoading}
-                    />
-                </div>
-                <FileSliderSection
+            {/* <SearchComponent /> */}
+            <div className="section-container">
+                <MovieViewVCard
+                    {...post}
+                    fileIsLoading={IRequest.isLoading}
+                />
+            </div>
+            {/* <FileSliderSection
                     headline={`New uploads`}
                     fileIsLoading={files.isLoading}
-                    items={files.data?.data} />
-            </main>
+                    items={files.data?.data} /> */}
         </Box>
     )
 }

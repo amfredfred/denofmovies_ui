@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Backdrop, Box, Button, CircularProgress, LinearProgress, Rating, Skeleton, Slider, Tooltip } from '@mui/material'
-import { ArrowBack, ArrowForward, Cancel, Close, Download, DownloadTwoTone, Expand, ExpandLess, ExpandMore, FavoriteOutlined, Fullscreen, FullscreenExit, Info, OpenInBrowser, OpenInNewTwoTone, Pause, PauseCircle, PlayArrow, RemoveRedEye, Save, Settings, SkipNext, SkipPrevious, Telegram, VolumeDown, VolumeOff, VolumeUp, Web } from '@mui/icons-material'
+import React, { useRef, useState } from 'react'
+import { Box, Button, CircularProgress, LinearProgress, Skeleton, Tooltip } from '@mui/material'
+import { ArrowBack, Cancel, Close, DownloadTwoTone, ExpandMore, OpenInNewTwoTone, Save, Telegram, Web } from '@mui/icons-material'
 import { motion } from 'framer-motion'
 import { App, IApp, IQueryResponse } from '../../../../Interfaces'
 import useDownloader from "react-use-downloader"
 import { useLocalStorage, useWindowSize } from 'usehooks-ts'
-import { change, difference, msToTime, percentageOf, timeTo } from '../../../../Helpers'
+import { timeTo } from '../../../../Helpers'
 
 import 'vidstack/styles/defaults.css';
 import 'vidstack/styles/community-skin/video.css';

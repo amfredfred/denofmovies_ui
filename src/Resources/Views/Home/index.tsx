@@ -21,14 +21,14 @@ export default function HomePage() {
         retry: true,
     })
 
-    console.log(files.failureReason)
+    console.log(files.failureReason, " :FAILUIRE REASON!")
 
     return (
         <Box className='main-page-contents'>
             <SearchComponent />
             <main className="contents">
                 <div className="section-container">
-                    
+
                 </div>
                 {/* <div className="section-container" style={{ display: 'flex', padding: 10 }}>
                     <h1 style={{ margin: 'auto' }}>COMING SOON</h1>
